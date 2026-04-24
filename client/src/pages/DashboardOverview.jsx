@@ -53,7 +53,7 @@ export default function DashboardOverview() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/v1/hotel/overview')
+        const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/hotel/overview')
         if (res.ok) {
           const json = await res.json()
           setData(json)
@@ -142,7 +142,7 @@ export default function DashboardOverview() {
                 }
 
                 try {
-                  await fetch('http://localhost:3000/api/v1/crisis/trigger', {
+                  await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ type: 'security', severity: 'critical', roomNum: '101', floorNum: 1 })

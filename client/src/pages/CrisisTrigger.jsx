@@ -32,7 +32,7 @@ export default function CrisisTrigger() {
     const selectedCrisis = CRISIS_TYPES.find(c => c.id === crisisType)
 
     try {
-      const res = await fetch('http://localhost:3000/api/v1/crisis/trigger', {
+      const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

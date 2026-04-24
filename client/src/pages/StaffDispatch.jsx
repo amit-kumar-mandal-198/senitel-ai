@@ -7,7 +7,7 @@ export default function StaffDispatch() {
   useEffect(() => {
     const fetchStaff = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/v1/staff')
+        const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/staff')
         if (res.ok) {
           const data = await res.json()
           setStaff(data.staff || [])

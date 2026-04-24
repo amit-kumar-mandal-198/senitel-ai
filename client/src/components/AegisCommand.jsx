@@ -31,7 +31,7 @@ export default function AegisCommand({ isOpen, onClose }) {
         
         // Trigger the actual crisis via the backend API!
         try {
-          await fetch('http://localhost:3000/api/v1/crisis/trigger', {
+          await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'security', severity: 'critical', roomNum: 'AI Command', floorNum: 1 })
