@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis - Crisis Manager Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div>
+            <h1 style="margin:0;">🚨 Aegis Manager Dashboard</h1>
+            <p style="margin:5px 0 0; color: var(--text-secondary);" id="status-text">Status: 🟢 ALL CLEAR</p>
+        </div>
+        <div class="controls">
+            <button class="btn-danger" onclick="triggerCrisis('fire', '302')">🔥 Trigger Fire (Rm 302)</button>
+            <button onclick="resetCrisis()">🟢 Reset Clear</button>
+        </div>
+    </header>
+    <main class="container">
+        <h2>3rd Floor Map</h2>
+        <div class="floor-map" id="map">
+            <!-- Rooms populated by JS -->
+        </div>
+    </main>
+    <script src="dashboard.js"></script>
+</body>
+</html>

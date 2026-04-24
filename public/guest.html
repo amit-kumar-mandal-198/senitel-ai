@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis - Guest Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { justify-content: center; align-items: center; }
+        .room-selector { text-align: center; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <div class="room-selector">
+        <label>Your Room Location: </label>
+        <select id="guest-room">
+            <option value="301">301</option>
+            <option value="305" selected>305</option>
+            <option value="309">309</option>
+        </select>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-log" id="chat">
+            <div class="message bot">Hello. I am Aegis, the Hotel AI Assistant. How can I help you today?</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="msg-input" placeholder="Type a message..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    
+    <script src="guest.js"></script>
+</body>
+</html>

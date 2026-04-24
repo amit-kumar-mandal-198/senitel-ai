@@ -1,0 +1,71 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Hotel {
+  id        String   @id @default(uuid())
+  name      String
+  location  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  floors    Floor[]
+}
+
+model Floor {
+  id      Int    @id @default(autoincrement())
+  level   Int
+  hotelId String
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
+  rooms   Room[]
+
+  @@unique([hotelId, level])
+}
+
+model Room {
+  id      String  @id @default(uuid())
+  number  String
+  type    String  // "standard", "deluxe", "suite"
+  status  String  // "vacant", "occupied", "maintenance"
+  floorId Int
+  floor   Floor   @relation(fields: [floorId], references: [id])
+  guests  Guest[]
+
+  @@unique([floorId, number])
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String?
+  email     String?
+  roomId    String?
+  room      Room?    @relation(fields: [roomId], references: [id])
+  checkIn   DateTime @default(now())
+  checkOut  DateTime?
+}
+
+model Staff {
+  id       String @id @default(uuid())
+  name     String
+  role     String // "Security", "Maintenance", "Front Desk"
+  location String // "Lobby", "Floor 1", etc.
+  status   String // "on_duty", "off_duty", "on_call", "dispatched"
+  phone    String
+}
+
+model Incident {
+  id        String   @id @default(uuid())
+  type      String   // "fire", "flood", "medical", etc.
+  severity  String   // "critical", "high", "medium", "low"
+  status    String   // "active", "investigating", "resolved"
+  roomNum   String?
+  floorNum  Int?
+  note      String?
+  createdAt DateTime @default(now())
+  resolvedAt DateTime?
+}

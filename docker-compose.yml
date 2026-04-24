@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # We mount the dev.db file, so this path is correct inside /app
+      - DATABASE_URL=file:./dev.db
+      # You can pass real keys here if desired, otherwise defaults to simulation
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-placeholder}
+      - PORT=3000
+    volumes:
+      # Persist the sqlite DB across container restarts by mounting a named volume
+      - sqlite_data:/app/dev.db
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  sqlite_data:

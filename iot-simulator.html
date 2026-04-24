@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoT Sensor Hardware Simulator</title>
+  <style>
+    :root {
+      --bg: #111827;
+      --card: #1f2937;
+      --text: #f9fafb;
+      --border: #374151;
+      --accent: #3b82f6;
+      --alert-fire: #ef4444;
+      --alert-water: #0ea5e9;
+      --alert-gas: #eab308;
+    }
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .simulator {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+    h1 { margin-top: 0; font-size: 20px; text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+    
+    .sensor-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .btn {
+      padding: 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: transform 0.1s, filter 0.2s;
+      color: white;
+    }
+    
+    .btn:active { transform: scale(0.98); }
+    .btn:hover { filter: brightness(1.1); box-shadow: 0 0 15px currentColor; }
+    
+    .btn-fire { background-color: var(--alert-fire); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3); }
+    .btn-water { background-color: var(--alert-water); box-shadow: 0 4px 14px rgba(14, 165, 233, 0.3); }
+    .btn-gas { background-color: var(--alert-gas); box-shadow: 0 4px 14px rgba(234, 179, 8, 0.3); }
+    
+    .log-panel {
+      margin-top: 24px;
+      background: #000;
+      padding: 12px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 12px;
+      height: 150px;
+      overflow-y: auto;
+      color: #10b981;
+    }
+    .log-entry { margin-bottom: 4px; }
+    .log-error { color: #ef4444; }
+  </style>
+</head>
+<body>
+
+<div class="simulator">
+  <h1>📡 Hardware Sensor Simulator</h1>
+  
+  <div class="sensor-panel">
+    <button class="btn btn-fire" onclick="triggerSensor('smoke', '204', 2)">
+      🔥 Trigger Smoke Alarm (Room 204)
+    </button>
+    <button class="btn btn-water" onclick="triggerSensor('water', '102', 1)">
+      🌊 Trigger Flood Sensor (Room 102)
+    </button>
+    <button class="btn btn-gas" onclick="triggerSensor('gas', '315', 3)">
+      💨 Trigger Gas Leak (Room 315)
+    </button>
+  </div>
+
+  <div class="log-panel" id="console">
+    <div class="log-entry">System armed. Awaiting sensor triggers...</div>
+  </div>
+</div>
+
+<script>
+  function log(msg, isError = false) {
+    const pnl = document.getElementById('console');
+    const el = document.createElement('div');
+    el.className = isError ? 'log-entry log-error' : 'log-entry';
+    el.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    pnl.appendChild(el);
+    pnl.scrollTop = pnl.scrollHeight;
+  }
+
+  async function triggerSensor(type, room, floor) {
+    log(`Emitting ${type.toUpperCase()} sensor signal for R${room}...`);
+    
+    // Simulate real hardware JSON payload
+    const payload = {
+      sensorId: `HW-${type.toUpperCase()}-${Math.random().toString(36).substring(7)}`,
+      sensorType: type,
+      roomNum: room.toString(),
+      floorNum: floor,
+      reading: type === 'smoke' ? '400 PPM' : type === 'water' ? 'Moisture 95%' : 'VOC 800 PPM',
+      timestamp: new Date().toISOString()
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/api/v1/webhooks/iot-sensor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        if(data.incident) log(`Success! Sentinel AI activated Incident ${data.incident.id}`);
+        else log(`Webhook accepted: ${data.message}`);
+      } else {
+        log(`API Error: ${data.error || 'Unknown'}`, true);
+      }
+
+    } catch (err) {
+      log('Connection failed. Is the Fastify backend running on Port 3000?', true);
+    }
+  }
+</script>
+</body>
+</html>
