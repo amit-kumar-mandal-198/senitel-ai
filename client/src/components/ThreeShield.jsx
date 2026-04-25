@@ -2,45 +2,80 @@ import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Sphere, MeshDistortMaterial, Float, Stars, Edges } from '@react-three/drei'
 
-// The core AI Brain/Shield shape
-function SentinelCore() {
-  const meshRef = useRef()
+// The Quantum Rings / Energy Core
+function QuantumRings() {
+  const groupRef = useRef()
+  const ring1 = useRef()
+  const ring2 = useRef()
+  const ring3 = useRef()
+  const coreRef = useRef()
 
-  // Slowly rotate the entire core
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += 0.005
-      meshRef.current.rotation.x += 0.002
+    const t = state.clock.getElapsedTime()
+    
+    // Rotate the entire group slowly
+    if (groupRef.current) {
+      groupRef.current.rotation.y = t * 0.1
+      groupRef.current.rotation.x = Math.sin(t * 0.2) * 0.1
     }
+
+    // Fast, complex rotation for the quantum rings
+    if (ring1.current) { ring1.current.rotation.x = t * 0.5; ring1.current.rotation.y = t * 0.2 }
+    if (ring2.current) { ring2.current.rotation.y = t * 0.6; ring2.current.rotation.z = t * 0.3 }
+    if (ring3.current) { ring3.current.rotation.z = t * 0.7; ring3.current.rotation.x = t * 0.4 }
   })
+
+  // Material for the rings (glassy, neon look)
+  const ringMaterial = (
+    <meshPhysicalMaterial 
+      color="#1e40af" 
+      emissive="#3b82f6" 
+      emissiveIntensity={0.8} 
+      roughness={0.1} 
+      metalness={0.9} 
+      transparent={true} 
+      opacity={0.7} 
+      clearcoat={1}
+      clearcoatRoughness={0.1}
+    />
+  )
 
   return (
     <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <mesh ref={meshRef}>
-        <icosahedronGeometry args={[2, 0]} />
-        <meshPhysicalMaterial 
-          color="#1e40af" 
-          emissive="#2563eb" 
-          emissiveIntensity={0.5} 
-          roughness={0.2} 
-          metalness={0.8} 
-          wireframe={false} 
-          transparent={true} 
-          opacity={0.8} 
-        />
-        <Edges scale={1.05} color="#60a5fa" />
+      <group ref={groupRef}>
         
-        {/* Inner glowing sphere */}
-        <Sphere args={[1.2, 32, 32]}>
+        {/* Core Energy Sphere */}
+        <Sphere ref={coreRef} args={[0.8, 32, 32]}>
           <MeshDistortMaterial 
             color="#60a5fa" 
             emissive="#93c5fd" 
-            emissiveIntensity={1} 
-            distort={0.4} 
-            speed={3} 
+            emissiveIntensity={1.5} 
+            distort={0.5} 
+            speed={4} 
+            transparent
+            opacity={0.9}
           />
         </Sphere>
-      </mesh>
+
+        {/* Ring 1 (X-Axis dominant) */}
+        <mesh ref={ring1}>
+          <torusGeometry args={[2.0, 0.05, 16, 100]} />
+          {ringMaterial}
+        </mesh>
+
+        {/* Ring 2 (Y-Axis dominant) */}
+        <mesh ref={ring2}>
+          <torusGeometry args={[2.4, 0.04, 16, 100]} />
+          {ringMaterial}
+        </mesh>
+
+        {/* Ring 3 (Z-Axis dominant) */}
+        <mesh ref={ring3}>
+          <torusGeometry args={[2.8, 0.03, 16, 100]} />
+          {ringMaterial}
+        </mesh>
+
+      </group>
     </Float>
   )
 }
@@ -68,7 +103,7 @@ export default function ThreeShield() {
         <directionalLight position={[10, 10, 5]} intensity={2} color="#60a5fa" />
         <directionalLight position={[-10, -10, -5]} intensity={1} color="#c084fc" />
         
-        <SentinelCore />
+        <QuantumRings />
         <FloatingParticles />
         
         <OrbitControls 
