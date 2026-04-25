@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { path: '/dashboard/floors', icon: '🗺️', label: 'Floor Maps' },
   { path: '/dashboard/incidents', icon: '🚨', label: 'Active Incidents' },
   { path: '/dashboard/reports', icon: '📋', label: 'Incident Reports' },
-  { path: '/dashboard/staff', icon: '👥', label: 'Staff Dispatch' },
+  { path: '/dashboard/staff', icon: '🗺️', label: 'Responder Map' },
   { type: 'divider' },
   { path: '/dashboard/settings', icon: '⚙️', label: 'Settings' },
 ]

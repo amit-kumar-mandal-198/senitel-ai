@@ -1,25 +1,34 @@
 import { useState, useEffect } from 'react'
+import BuildingMap from '../components/BuildingMap'
 
 export default function StaffDispatch() {
   const [staff, setStaff] = useState([])
+  const [activeCrisis, setActiveCrisis] = useState(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchStaff = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/staff')
-        if (res.ok) {
-          const data = await res.json()
+        const staffRes = await fetch('https://senitel-ai-production.up.railway.app/api/v1/staff')
+        if (staffRes.ok) {
+          const data = await staffRes.json()
           setStaff(data.staff || [])
         }
+        
+        const overviewRes = await fetch('https://senitel-ai-production.up.railway.app/api/v1/hotel/overview')
+        if (overviewRes.ok) {
+          const overviewData = await overviewRes.json()
+          setActiveCrisis(overviewData.activeCrisis)
+        }
+        
       } catch (err) {
-        console.error('Failed to fetch staff', err)
+        console.error('Failed to fetch data', err)
       } finally {
         setLoading(false)
       }
     }
-    fetchStaff()
-    const poll = setInterval(fetchStaff, 5000)
+    fetchData()
+    const poll = setInterval(fetchData, 5000)
     return () => clearInterval(poll)
   }, [])
 
@@ -44,8 +53,8 @@ export default function StaffDispatch() {
     <div className="dash-page">
       <div className="dash-page-header">
         <div>
-          <h1 className="dash-page-title">👥 Staff Dispatch</h1>
-          <p className="dash-page-subtitle">Manage and dispatch staff during emergencies</p>
+          <h1 className="dash-page-title">{activeCrisis ? '🚨 Responder Map & Staff Dispatch' : '👥 Staff Dispatch'}</h1>
+          <p className="dash-page-subtitle">Tactical building overview and emergency staff deployment</p>
         </div>
         <button className="btn btn-primary">📢 Alert All Staff</button>
       </div>
@@ -55,6 +64,10 @@ export default function StaffDispatch() {
         <div className="dash-kpi-card"><div className="dash-kpi-value" style={{ color: '#DC2626' }}>{staff.filter(s=>s.status==='dispatched').length}</div><div className="dash-kpi-label">Dispatched</div></div>
         <div className="dash-kpi-card"><div className="dash-kpi-value" style={{ color: '#F59E0B' }}>{staff.filter(s=>s.status==='on_call').length}</div><div className="dash-kpi-label">On Call</div></div>
         <div className="dash-kpi-card"><div className="dash-kpi-value">{staff.length}</div><div className="dash-kpi-label">Total Staff</div></div>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <BuildingMap activeCrisis={activeCrisis} />
       </div>
 
       <div className="dash-card">
