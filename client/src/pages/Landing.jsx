@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import ThreeShield from '../components/ThreeShield'
 import TiltCard from '../components/TiltCard'
 import ThemeToggle from '../components/ThemeToggle'
 
@@ -40,8 +39,40 @@ export default function Landing() {
       {/* HERO WITH 3D WEBGL SHIELD */}
       <section className="hero" id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
         
-        {/* Render the fully animated 3D WebGL Shield taking up the background */}
-        <ThreeShield />
+        {/* High-fidelity Quantum Rings visual exactly matching the concept art */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          zIndex: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'none',
+          overflow: 'hidden'
+        }}>
+           <style>{`
+             @keyframes floatCore {
+               0% { transform: translateY(0px) scale(1); filter: brightness(1); }
+               50% { transform: translateY(-30px) scale(1.02); filter: brightness(1.2) drop-shadow(0 0 50px rgba(96, 165, 250, 0.4)); }
+               100% { transform: translateY(0px) scale(1); filter: brightness(1); }
+             }
+           `}</style>
+           <img 
+             src="/quantum_rings.png" 
+             alt="Quantum Energy Core" 
+             style={{
+               width: '100%',
+               height: '100%',
+               objectFit: 'cover',
+               objectPosition: 'center',
+               opacity: 0.8,
+               mixBlendMode: 'screen',
+               animation: 'floatCore 8s ease-in-out infinite',
+               maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%)',
+               WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 80%)'
+             }}
+           />
+        </div>
         
         <div className="hero-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', gap: '40px', maxWidth: '1200px', width: '100%', margin: '0 auto', textAlign: 'left', pointerEvents: 'none', position: 'relative', zIndex: 10 }}>
           
