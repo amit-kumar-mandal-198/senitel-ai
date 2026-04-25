@@ -39,13 +39,10 @@ export default function Landing() {
       {/* HERO WITH 3D WEBGL SHIELD */}
       <section className="hero" id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
         
-        {/* High-fidelity Quantum Rings visual */}
+        {/* High-fidelity Quantum Rings visual — centered behind text */}
         <div style={{
           position: 'absolute',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: '55%',
+          inset: 0,
           zIndex: 0,
           display: 'flex',
           alignItems: 'center',
@@ -64,16 +61,15 @@ export default function Landing() {
              src="/quantum_rings.png" 
              alt="Quantum Energy Core" 
              style={{
-               width: '90%',
+               width: 'min(80vh, 700px)',
                height: 'auto',
-               maxWidth: '600px',
                objectFit: 'contain',
-               opacity: 0.9,
+               opacity: 0.85,
                mixBlendMode: 'screen',
                animation: 'floatCore 8s ease-in-out infinite',
                imageRendering: 'auto',
-               maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 85%)',
-               WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 50%, rgba(0,0,0,0) 85%)'
+               maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 80%)',
+               WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,1) 45%, rgba(0,0,0,0) 80%)'
              }}
            />
         </div>
