@@ -10,6 +10,8 @@ import { PASystemService } from './channels/pa.service';
 import { GovtAlertService } from './channels/gov.service';
 import { LoraMeshService, BleService, SatelliteService } from './channels/offline.service';
 import { IoTService } from './channels/iot.service';
+import { SosService } from './channels/sos.service';
+import { TwoWayService } from './channels/two-way.service';
 import { AiPipelineService } from './channels/ai-pipeline.service';
 
 /**
@@ -34,7 +36,9 @@ export class DispatchOrchestrator {
             new LoraMeshService(),
             new BleService(),
             new SatelliteService(),
-            new IoTService()
+            new IoTService(),
+            new SosService(),
+            new TwoWayService()
         );
     }
 

@@ -20,6 +20,21 @@ export const config = {
     },
     teams: {
         webhookUrl: process.env.TEAMS_WEBHOOK_URL
+    },
+    vonage: {
+        apiKey: process.env.VONAGE_API_KEY,
+        apiSecret: process.env.VONAGE_API_SECRET
+    },
+    aws: {
+        region: process.env.AWS_REGION,
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    },
+    anthropic: {
+        apiKey: process.env.ANTHROPIC_API_KEY
+    },
+    mqtt: {
+        url: process.env.MQTT_URL || 'mqtt://localhost:1883'
     }
 };
 
