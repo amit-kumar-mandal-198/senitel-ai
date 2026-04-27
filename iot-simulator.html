@@ -125,7 +125,7 @@
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/v1/webhooks/iot-sensor', {
+      const response = await fetch('https://senitel-ai-production.up.railway.app/api/v1/webhooks/iot-sensor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -143,7 +143,7 @@
       }
 
     } catch (err) {
-      log('Connection failed. Is the Fastify backend running on Port 3000?', true);
+      log('Connection failed. Is the Sentinel AI production backend reachable?', true);
     }
   }
 </script>

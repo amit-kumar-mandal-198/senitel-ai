@@ -18,7 +18,7 @@ export default function Landing() {
       {/* NAVBAR */}
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
         <div className="container">
-          <a href="#" className="nav-brand">
+          <a href="https://senitel-ai-production.up.railway.app" className="nav-brand">
             <div className="nav-logo">S</div>
             <span className="nav-brand-text">Sentinel <span>AI</span></span>
           </a>

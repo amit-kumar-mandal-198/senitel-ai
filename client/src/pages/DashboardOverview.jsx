@@ -69,14 +69,12 @@ export default function DashboardOverview() {
     return () => clearInterval(poll)
   }, [])
 
-  if (!data) {
     return (
       <div className="dash-overview" style={{ display: 'flex', justifyContent: 'center', paddingTop: '100px', color: 'var(--text-secondary)' }}>
         <h2>Connecting to Hotel API...</h2>
-        <p>Make sure the Fastify backend is running on port 3000</p>
+        <p>Make sure the Sentinel AI backend is reachable at the Railway URL.</p>
       </div>
     )
-  }
 
   const { activeCrisis, recentIncidents, hotel } = data
   const totalRooms = hotel.floors.reduce((acc, f) => acc + f.rooms.length, 0)
