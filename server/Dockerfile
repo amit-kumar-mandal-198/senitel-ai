@@ -1,38 +1,26 @@
-# Stage 1: Build & Prisma Generation
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
-
-# Install exact dependencies
-RUN npm ci
-
-# Copy TypeScript source code
-COPY . .
-
-# Generate Prisma Client and Compile TypeScript
-RUN npx prisma generate
-RUN npm run build
-
-# Stage 2: Production Image
 FROM node:20-alpine
 
-WORKDIR /app
+WORKDIR /app/server
 
-# Copy built artifacts from the builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/prisma ./prisma
+# Copy package files
+COPY server/package*.json ./
 
-# Add a default .env just in case, but rely on docker-compose ENV mapping
-RUN echo "DATABASE_URL=file:./dev.db" > .env
+# Install dependencies
+RUN npm ci --omit=dev
 
-# Expose Fastify Port
+# Copy source code
+COPY server/src ./src
+COPY server/tsconfig.json ./tsconfig.json
+
+# Build TypeScript
+RUN npm run build
+
+# Expose port
 EXPOSE 3000
 
-# Start command
+# Set environment
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Start
 CMD ["npm", "start"]
