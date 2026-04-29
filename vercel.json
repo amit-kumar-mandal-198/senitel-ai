@@ -1,0 +1,1 @@
+{\n  "version": 2,\n  "builds": [\n    {\n      "src": "client/**/*",\n      "use": "@vercel/static"\n    }\n  ]\n}
