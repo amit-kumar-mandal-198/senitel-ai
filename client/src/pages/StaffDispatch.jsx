@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API_BASE_URL from '../api.config'
 import BuildingMap from '../components/BuildingMap'
 
 export default function StaffDispatch() {
@@ -9,13 +10,13 @@ export default function StaffDispatch() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const staffRes = await fetch('https://senitel-ai-production.up.railway.app/api/v1/staff')
+        const staffRes = await fetch(`${API_BASE_URL}/api/v1/staff`)
         if (staffRes.ok) {
           const data = await staffRes.json()
           setStaff(data.staff || [])
         }
         
-        const overviewRes = await fetch('https://senitel-ai-production.up.railway.app/api/v1/hotel/overview')
+        const overviewRes = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
         if (overviewRes.ok) {
           const overviewData = await overviewRes.json()
           setActiveCrisis(overviewData.activeCrisis)

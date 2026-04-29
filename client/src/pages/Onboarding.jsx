@@ -35,7 +35,7 @@ export default function Onboarding() {
       <div className="onboarding-sidebar">
         <div className="dash-brand" style={{ marginBottom: '40px' }}>
           <div className="dash-brand-icon">S</div>
-          <span className="dash-brand-text">Sentinel <span>AI</span></span>
+          <span className="dash-brand-text">Sanitel <span>AI</span></span>
         </div>
         
         <h2 style={{ fontSize: '20px', marginBottom: '24px', color: 'var(--text-primary)' }}>Setup your Hotel</h2>
@@ -65,7 +65,7 @@ export default function Onboarding() {
           
           {step === 1 && (
             <div className="onboarding-panel fade-in">
-              <h1>Welcome to Sentinel AI</h1>
+              <h1>Welcome to Sanitel AI</h1>
               <p>Let's get your hotel set up for automated crisis management in less than 5 minutes.</p>
               
               <div className="dash-field" style={{ marginTop: '32px' }}>
@@ -105,7 +105,7 @@ export default function Onboarding() {
           {step === 3 && (
             <div className="onboarding-panel fade-in">
               <h1>IoT & Sensor Integration</h1>
-              <p>Connect your existing hardware to Sentinel AI for instant zero-touch emergency triggers.</p>
+              <p>Connect your existing hardware to Sanitel AI for instant zero-touch emergency triggers.</p>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '32px' }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', border: '1px solid var(--sentinel-blue-light)', borderRadius: 'var(--radius-md)', background: 'rgba(59,130,246,0.1)', cursor: 'pointer' }}>
@@ -131,7 +131,7 @@ export default function Onboarding() {
             <div className="onboarding-panel fade-in text-center" style={{ textAlign: 'center', paddingTop: '40px' }}>
               <div style={{ fontSize: '64px', marginBottom: '24px' }}>🛡️</div>
               <h1>You're Ready to Launch</h1>
-              <p>Your property is configured. Sentinel AI is armed and monitoring.</p>
+              <p>Your property is configured. Sanitel AI is armed and monitoring.</p>
               
               <div className="dash-card text-left" style={{ textAlign: 'left', marginTop: '32px', display: 'inline-block', width: '100%', maxWidth: '400px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>

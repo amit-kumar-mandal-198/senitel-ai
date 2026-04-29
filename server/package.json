@@ -1,5 +1,5 @@
 {
-  "name": "sentinel-server",
+  "name": "sanitel-server",
   "version": "1.0.0",
   "description": "Hotel Crisis Management API",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "mqtt": "^5.5.5",
     "socket.io": "^4.8.3",
     "twilio": "^5.13.1",
-    "vonage": "^4.2.2",
+    "@vonage/server-sdk": "^3.14.0",
     "xmlbuilder2": "^3.1.1"
   },
   "devDependencies": {

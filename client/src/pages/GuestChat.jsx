@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import API_BASE_URL from '../api.config'
 
 export default function GuestChat({ embedded }) {
   const [room, setRoom] = useState('305')
@@ -40,7 +41,7 @@ export default function GuestChat({ embedded }) {
       : conversationHistory
 
     try {
-      const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/chat/aegis', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/chat/aegis`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

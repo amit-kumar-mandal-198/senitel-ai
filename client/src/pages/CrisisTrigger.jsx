@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import API_BASE_URL from '../api.config'
 
 const CRISIS_TYPES = [
   { id: 'fire', icon: '🔥', label: 'Fire', color: '#DC2626', desc: 'Fire detected in room or floor. Triggers evacuation protocol.', severity: 'critical' },
@@ -32,7 +33,7 @@ export default function CrisisTrigger() {
     const selectedCrisis = CRISIS_TYPES.find(c => c.id === crisisType)
 
     try {
-      const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
+      const res = await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

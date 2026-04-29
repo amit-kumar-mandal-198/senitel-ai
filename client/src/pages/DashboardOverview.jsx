@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import TiltCard from '../components/TiltCard'
 import CCTVModal from '../components/CCTVModal'
 import MeshVisualizer from '../components/MeshVisualizer'
+import API_BASE_URL from '../api.config'
 
 const sevColors = { critical: '#DC2626', high: '#F59E0B', medium: '#3B82F6', low: '#10B981' }
 const statusColors = { resolved: '#10B981', active: '#DC2626', investigating: '#F59E0B' }
@@ -53,7 +54,7 @@ export default function DashboardOverview() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/hotel/overview')
+        const res = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
         if (res.ok) {
           const json = await res.json()
           setData(json)
@@ -140,7 +141,7 @@ export default function DashboardOverview() {
                 }
 
                 try {
-                  await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
+                  await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ type: 'security', severity: 'critical', roomNum: '101', floorNum: 1 })

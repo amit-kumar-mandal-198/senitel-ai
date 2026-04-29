@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API_BASE_URL from '../api.config'
 import GuestChat from './GuestChat'
 
 export default function GuestOverview() {
@@ -8,7 +9,7 @@ export default function GuestOverview() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('https://senitel-ai-production.up.railway.app/api/v1/hotel/overview')
+        const res = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
         if (res.ok) {
           const json = await res.json()
           setActiveCrisis(json.activeCrisis)
@@ -25,7 +26,7 @@ export default function GuestOverview() {
   const triggerSOS = async () => {
     if (window.confirm("TRIGGER EMERGENCY SOS? This alerts management immediately.")) {
       try {
-        await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
+        await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // Guests trigger a general "medical/security" SOS for their unknown or rough location

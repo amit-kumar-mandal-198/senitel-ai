@@ -1,5 +1,5 @@
 import twilio from 'twilio';
-import { Vonage } from 'vonage';
+import { Vonage } from '@vonage/server-sdk';
 import { AlertChannel, AlertPayload, DeliveryReceipt } from './channel.interface';
 import { config, isChannelConfigured } from '../../config/channels.config';
 

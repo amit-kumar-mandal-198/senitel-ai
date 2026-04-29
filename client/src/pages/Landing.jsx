@@ -18,9 +18,9 @@ export default function Landing() {
       {/* NAVBAR */}
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
         <div className="container">
-          <a href="https://senitel-ai-production.up.railway.app" className="nav-brand">
+          <a href="/" className="nav-brand">
             <div className="nav-logo">S</div>
-            <span className="nav-brand-text">Sentinel <span>AI</span></span>
+            <span className="nav-brand-text">Sanitel <span>AI</span></span>
           </a>
           <ul className="nav-links">
             <li><a href="#features">Features</a></li>
@@ -64,7 +64,7 @@ export default function Landing() {
             </h1>
             
             <p className="hero-subtitle" style={{ marginLeft: 0, paddingRight: '20px', textAlign: 'left' }}>
-              Sentinel AI is the world's most advanced autonomous safety brain for premium hotels. We ingest real-time IoT sensor data to instantly trigger lockdown protocols, dispatch medical staff, and route panicked guests to safety via SMS.
+              Sanitel AI is the world's most advanced autonomous safety brain for premium hotels. We ingest real-time IoT sensor data to instantly trigger lockdown protocols, dispatch medical staff, and route panicked guests to safety via SMS.
             </p>
 
             <div className="hero-actions" style={{ justifyContent: 'flex-start' }}>
@@ -123,7 +123,7 @@ export default function Landing() {
           <div style={{ textAlign: 'center' }}>
             <div className="section-label" style={{ justifyContent: 'center' }}>How It Works</div>
             <h2 className="section-title" style={{ margin: '0 auto var(--space-4)' }}>Crisis Detected → Guests Safe in Seconds</h2>
-            <p className="section-subtitle" style={{ margin: '0 auto' }}>From the moment a crisis is detected to full evacuation — Sentinel AI handles everything intelligently.</p>
+            <p className="section-subtitle" style={{ margin: '0 auto' }}>From the moment a crisis is detected to full evacuation — Sanitel AI handles everything intelligently.</p>
           </div>
           <div className="lifecycle-track">
             {[
@@ -178,7 +178,7 @@ export default function Landing() {
           <div style={{ textAlign: 'center' }}>
             <div className="section-label" style={{ justifyContent: 'center' }}>Supported Scenarios</div>
             <h2 className="section-title" style={{ margin: '0 auto var(--space-4)' }}>Every Crisis. One Platform.</h2>
-            <p className="section-subtitle" style={{ margin: '0 auto' }}>Sentinel AI handles all types of hotel emergencies with specialized AI responses.</p>
+            <p className="section-subtitle" style={{ margin: '0 auto' }}>Sanitel AI handles all types of hotel emergencies with specialized AI responses.</p>
           </div>
           <div className="usp-grid" style={{ marginTop: '48px' }}>
             {[
@@ -241,7 +241,7 @@ export default function Landing() {
           <div className="cta-content">
             <div className="section-label" style={{ justifyContent: 'center' }}>Ready?</div>
             <h2 className="cta-title">Protect Your Guests.<br /><span className="gradient-text">Starting Today.</span></h2>
-            <p className="cta-subtitle">Every second matters in a crisis. Set up Sentinel AI for your hotel in minutes.</p>
+            <p className="cta-subtitle">Every second matters in a crisis. Set up Sanitel AI for your hotel in minutes.</p>
             <div className="cta-actions">
               <a href="#" className="btn btn-primary btn-lg">🚀 Start 14-Day Free Trial</a>
               <Link to="/dashboard" className="btn btn-outline btn-lg">🖥️ Try Dashboard Demo</Link>
@@ -257,7 +257,7 @@ export default function Landing() {
             <div className="footer-brand">
               <a href="#" className="nav-brand">
                 <div className="nav-logo">S</div>
-                <span className="nav-brand-text">Sentinel <span>AI</span></span>
+                <span className="nav-brand-text">Sanitel <span>AI</span></span>
               </a>
               <p>AI-Powered Hotel Crisis Management. From fire detection to guest evacuation — intelligent safety for modern hospitality.</p>
             </div>
@@ -290,7 +290,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© 2026 Sentinel AI. All rights reserved.</p>
+            <p>© 2026 Sanitel AI. All rights reserved.</p>
             <div className="footer-badges">
               {['Fire Safety', 'ISO 22301', 'GDPR', 'PCI DSS', 'OSHA'].map(b => <span className="footer-badge" key={b}>{b}</span>)}
             </div>

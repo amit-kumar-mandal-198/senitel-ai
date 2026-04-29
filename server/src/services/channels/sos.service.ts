@@ -12,10 +12,17 @@ export class SosService implements AlertChannel {
         // Initialize BullMQ for Guardian Timers (requires Redis)
         try {
             this.timerQueue = new Queue('guardian-timers', { 
-                connection: { host: 'localhost', port: 6379 } 
+                connection: { 
+                    host: 'localhost', 
+                    port: 6379,
+                    maxRetriesPerRequest: null 
+                } 
+            });
+            this.timerQueue.on('error', (err) => {
+                console.warn('[SosService] BullMQ/Redis connection unavailable. Guardian timers will be disabled nodeside.');
             });
         } catch (err) {
-            console.warn('[SosService] BullMQ connection failed. Running in mock mode.');
+            console.warn('[SosService] BullMQ initialization failed. Running in mock mode.', err);
         }
     }
 

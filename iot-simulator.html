@@ -125,7 +125,7 @@
     };
 
     try {
-      const response = await fetch('https://senitel-ai-production.up.railway.app/api/v1/webhooks/iot-sensor', {
+      const response = await fetch('https://sanitel.railway.app/api/v1/webhooks/iot-sensor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -136,14 +136,14 @@
       const data = await response.json();
       
       if (response.ok) {
-        if(data.incident) log(`Success! Sentinel AI activated Incident ${data.incident.id}`);
+        if(data.incident) log(`Success! Sanitel AI activated Incident ${data.incident.id}`);
         else log(`Webhook accepted: ${data.message}`);
       } else {
         log(`API Error: ${data.error || 'Unknown'}`, true);
       }
 
     } catch (err) {
-      log('Connection failed. Is the Sentinel AI production backend reachable?', true);
+      log('Connection failed. Is the Sanitel AI production backend reachable?', true);
     }
   }
 </script>

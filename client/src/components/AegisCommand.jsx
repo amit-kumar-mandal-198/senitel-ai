@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import API_BASE_URL from '../api.config';
 
 export default function AegisCommand({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
@@ -31,7 +32,7 @@ export default function AegisCommand({ isOpen, onClose }) {
         
         // Trigger the actual crisis via the backend API!
         try {
-          await fetch('https://senitel-ai-production.up.railway.app/api/v1/crisis/trigger', {
+          await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'security', severity: 'critical', roomNum: 'AI Command', floorNum: 1 })
