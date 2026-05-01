@@ -50,17 +50,66 @@ export default function DashboardOverview() {
     return () => clearInterval(interval)
   }, [data?.activeCrisis, evacProgress])
 
-  // Fetch real data from backend
+  // Mock fallback data for demo mode
+  const mockData = {
+    hotel: {
+      id: '1',
+      name: 'Grand Hotel',
+      floors: [
+        {
+          id: 'f1', level: 1,
+          rooms: [
+            { id: 'r1', number: '101', status: 'occupied', guests: [{id: 'g1', name: 'Guest'}] },
+            { id: 'r2', number: '102', status: 'vacant', guests: [] },
+            { id: 'r3', number: '103', status: 'occupied', guests: [{id: 'g2', name: 'Guest'}] },
+            { id: 'r4', number: '104', status: 'vacant', guests: [] },
+            { id: 'r5', number: '105', status: 'occupied', guests: [{id: 'g3', name: 'Guest'}] }
+          ]
+        },
+        {
+          id: 'f2', level: 2,
+          rooms: [
+            { id: 'r6', number: '201', status: 'occupied', guests: [{id: 'g4', name: 'Guest'}] },
+            { id: 'r7', number: '202', status: 'vacant', guests: [] },
+            { id: 'r8', number: '203', status: 'occupied', guests: [{id: 'g5', name: 'Guest'}] },
+            { id: 'r9', number: '204', status: 'vacant', guests: [] },
+            { id: 'r10', number: '205', status: 'occupied', guests: [{id: 'g6', name: 'Guest'}] }
+          ]
+        },
+        {
+          id: 'f3', level: 3,
+          rooms: [
+            { id: 'r11', number: '301', status: 'occupied', guests: [{id: 'g7', name: 'Guest'}] },
+            { id: 'r12', number: '302', status: 'vacant', guests: [] },
+            { id: 'r13', number: '303', status: 'occupied', guests: [{id: 'g8', name: 'Guest'}] },
+            { id: 'r14', number: '304', status: 'vacant', guests: [] },
+            { id: 'r15', number: '305', status: 'occupied', guests: [{id: 'g9', name: 'Guest'}] }
+          ]
+        }
+      ]
+    },
+    activeCrisis: null,
+    recentIncidents: []
+  }
+
+  // Fetch real data from backend with demo fallback
   useEffect(() => {
+    let attempts = 0
     const fetchData = async () => {
       try {
         const res = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
         if (res.ok) {
           const json = await res.json()
           setData(json)
+          return
         }
       } catch (err) {
-        console.error('Failed to connect to API', err)
+        console.warn('API unreachable, attempt', ++attempts)
+      }
+      // After 2 failed attempts (~6s), switch to demo mode
+      if (attempts >= 2 && !data) {
+        console.warn('Switching to demo mode with mock data')
+        setData(mockData)
       }
     }
     
@@ -70,12 +119,15 @@ export default function DashboardOverview() {
     return () => clearInterval(poll)
   }, [])
 
+  if (!data) {
     return (
-      <div className="dash-overview" style={{ display: 'flex', justifyContent: 'center', paddingTop: '100px', color: 'var(--text-secondary)' }}>
+      <div className="dash-overview" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: '100px', color: 'var(--text-secondary)', textAlign: 'center' }}>
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--sentinel-blue)', borderTop: '3px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '20px' }} />
         <h2>Connecting to Hotel API...</h2>
-        <p>Make sure the Sentinel AI backend is reachable at the Railway URL.</p>
+        <p>Loading dashboard data. If the backend is unavailable, demo mode will activate shortly.</p>
       </div>
     )
+  }
 
   const { activeCrisis, recentIncidents, hotel } = data
   const totalRooms = hotel.floors.reduce((acc, f) => acc + f.rooms.length, 0)
