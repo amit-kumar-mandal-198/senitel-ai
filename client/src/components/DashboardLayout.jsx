@@ -28,7 +28,7 @@ export default function DashboardLayout() {
         <div className="dash-sidebar-header">
           <Link to="/" className="dash-brand">
             <div className="dash-brand-icon">S</div>
-            {!sidebarCollapsed && <span className="dash-brand-text">Sanitel <span>AI</span></span>}
+            {!sidebarCollapsed && <span className="dash-brand-text">Sentinel <span>AI</span></span>}
           </Link>
           <button className="dash-collapse-btn" onClick={() => setSidebarCollapsed(!sidebarCollapsed)} aria-label="Toggle sidebar">
             {sidebarCollapsed ? '→' : '←'}

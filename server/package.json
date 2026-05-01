@@ -1,5 +1,5 @@
 {
-  "name": "sanitel-server",
+  "name": "sentinel-server",
   "version": "1.0.0",
   "description": "Hotel Crisis Management API",
   "main": "dist/index.js",
