@@ -20,7 +20,12 @@ const mockHotel = {
         { id: 'r2', number: '102', status: 'vacant', guests: [] },
         { id: 'r3', number: '103', status: 'occupied', guests: [] },
         { id: 'r4', number: '104', status: 'vacant', guests: [] },
-        { id: 'r5', number: '105', status: 'occupied', guests: [] }
+        { id: 'r5', number: '105', status: 'occupied', guests: [] },
+        { id: 'r1_6', number: '106', status: 'vacant', guests: [] },
+        { id: 'r1_7', number: '107', status: 'occupied', guests: [] },
+        { id: 'r1_8', number: '108', status: 'occupied', guests: [] },
+        { id: 'r1_9', number: '109', status: 'vacant', guests: [] },
+        { id: 'r1_10', number: '110', status: 'occupied', guests: [] }
       ]
     },
     {
@@ -31,7 +36,12 @@ const mockHotel = {
         { id: 'r7', number: '202', status: 'vacant', guests: [] },
         { id: 'r8', number: '203', status: 'occupied', guests: [] },
         { id: 'r9', number: '204', status: 'vacant', guests: [] },
-        { id: 'r10', number: '205', status: 'occupied', guests: [] }
+        { id: 'r10', number: '205', status: 'occupied', guests: [] },
+        { id: 'r2_6', number: '206', status: 'vacant', guests: [] },
+        { id: 'r2_7', number: '207', status: 'occupied', guests: [] },
+        { id: 'r2_8', number: '208', status: 'occupied', guests: [] },
+        { id: 'r2_9', number: '209', status: 'vacant', guests: [] },
+        { id: 'r2_10', number: '210', status: 'occupied', guests: [] }
       ]
     },
     {
@@ -42,7 +52,12 @@ const mockHotel = {
         { id: 'r12', number: '302', status: 'vacant', guests: [] },
         { id: 'r13', number: '303', status: 'occupied', guests: [] },
         { id: 'r14', number: '304', status: 'vacant', guests: [] },
-        { id: 'r15', number: '305', status: 'occupied', guests: [] }
+        { id: 'r15', number: '305', status: 'occupied', guests: [] },
+        { id: 'r3_6', number: '306', status: 'vacant', guests: [] },
+        { id: 'r3_7', number: '307', status: 'occupied', guests: [] },
+        { id: 'r3_8', number: '308', status: 'occupied', guests: [] },
+        { id: 'r3_9', number: '309', status: 'vacant', guests: [] },
+        { id: 'r3_10', number: '310', status: 'occupied', guests: [] }
       ]
     }
   ]
