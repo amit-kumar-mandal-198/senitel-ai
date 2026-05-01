@@ -1,4 +1,4 @@
-import { AlertChannel, AlertPayload } from './channel.interface';
+import { AlertChannel, AlertPayload } from './channels/channel.interface';
 import { SmsService } from './channels/sms.service';
 import { PushService } from './channels/push.service';
 import { EmailService } from './channels/email.service';
