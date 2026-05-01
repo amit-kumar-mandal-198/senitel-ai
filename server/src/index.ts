@@ -1,9 +1,20 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import { PrismaClient } from '@prisma/client'
 
 const fastify = Fastify({ logger: true })
-const prisma = new PrismaClient()
+
+// Lazy Prisma — won't crash if DB is unavailable
+let prisma: any = null
+try {
+  const { PrismaClient } = require('@prisma/client')
+  prisma = new PrismaClient()
+  prisma.$connect().catch((err: any) => {
+    fastify.log.warn('Database connection failed, running in mock-only mode:', err.message)
+    prisma = null
+  })
+} catch (err: any) {
+  fastify.log.warn('Prisma client not available, running in mock-only mode:', err.message)
+}
 
 fastify.register(cors, { origin: true })
 
@@ -70,6 +81,9 @@ fastify.get('/health', async (request, reply) => {
 
 // Get hotel overview
 fastify.get('/api/v1/hotel/overview', async (request, reply) => {
+  if (!prisma) {
+    return { hotel: mockHotel, activeCrisis: null, recentIncidents: [] }
+  }
   try {
     const hotel = await prisma.hotel.findFirst({
       include: {
@@ -107,6 +121,9 @@ fastify.get('/api/v1/hotel/overview', async (request, reply) => {
 fastify.post('/api/v1/crisis/trigger', async (request, reply) => {
   const { type, severity, roomNum, floorNum } = request.body as any
   
+  if (!prisma) {
+    return { success: true, incident: { id: 'mock-' + Date.now(), type, severity, status: 'active', roomNum, floorNum }, message: 'Crisis triggered (mock mode)' }
+  }
   try {
     const incident = await prisma.incident.create({
       data: {
@@ -150,6 +167,7 @@ fastify.post('/api/v1/chat/aegis', async (request, reply) => {
 
 // Get staff
 fastify.get('/api/v1/staff', async (request, reply) => {
+  if (!prisma) return { staff: [] }
   try {
     const staff = await prisma.staff.findMany()
     return { staff: staff || [] }
@@ -162,7 +180,7 @@ fastify.get('/api/v1/staff', async (request, reply) => {
 // Resolve crisis
 fastify.post('/api/v1/crisis/resolve', async (request, reply) => {
   const { id } = request.body as any
-  
+  if (!prisma) return { success: true, message: 'Crisis resolved (mock mode)' }
   try {
     const incident = await prisma.incident.update({
       where: { id },
