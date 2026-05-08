@@ -1,5 +1,6 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import { processChatbotQuery } from './chatLogic'
 
 const fastify = Fastify({ logger: true })
 
@@ -140,20 +141,27 @@ fastify.post('/api/v1/crisis/trigger', async (request, reply) => {
 
 // Guest AI Chat
 fastify.post('/api/v1/chat/aegis', async (request, reply) => {
-  const { crisisActive } = request.body as any
+  const { conversationHistory, crisisActive } = request.body as any
   
   try {
+    // If conversation history is missing or empty, handle it gracefully
+    if (!conversationHistory || conversationHistory.length === 0) {
+      return {
+        success: true,
+        text: 'Hello! I am Aegis, your AI safety assistant. How can I help you today?'
+      }
+    }
+
+    const responseText = processChatbotQuery(conversationHistory)
     return {
       success: true,
-      text: crisisActive 
-        ? 'Emergency assistance is being coordinated for your location. Please proceed to the nearest stairwell and evacuate the building immediately.'
-        : 'Hello! I am Aegis, your AI safety assistant. How can I help you today?'
+      text: responseText
     }
   } catch (err: any) {
     fastify.log.error('Chat error:', err.message)
     return {
       success: true,
-      text: 'I apologize, but I am having trouble connecting. Please try again later.'
+      text: 'Unable to reach server. Please call 112 immediately.'
     }
   }
 })

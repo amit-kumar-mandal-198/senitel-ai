@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import API_BASE_URL from '../api.config';
+import { triageCrisis } from '../utils/crisisTriage';
 
 export default function AegisCommand({ isOpen, onClose }) {
   const [messages, setMessages] = useState([
@@ -24,24 +25,22 @@ export default function AegisCommand({ isOpen, onClose }) {
 
     // Simulate AI processing
     setTimeout(async () => {
-      let botResponse = "I have logged your request.";
+      let botResponse = triageCrisis(userMsg);
 
       const lowerTxt = userMsg.toLowerCase();
+      // Maintain original backend integration for active severe emergencies
       if (lowerTxt.includes('lockdown') || lowerTxt.includes('evacuate') || lowerTxt.includes('emergency')) {
-        botResponse = "Understood. Bypassing manual setup. Activating critical security lockdown on the facility now. Alerting response teams.";
-        
-        // Trigger the actual crisis via the backend API!
         try {
-          await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
+          const res = await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: 'security', severity: 'critical', roomNum: 'AI Command', floorNum: 1 })
           });
+          if (!res.ok) throw new Error("API response not ok");
         } catch(err) {
           console.error("API error", err);
+          botResponse += "\n\nUnable to reach server. Please call 112 immediately.";
         }
-      } else if (lowerTxt.includes('status') || lowerTxt.includes('report')) {
-        botResponse = "Current facility status is Nominal. All sensors indicate safe levels. No active incidents reported in the last 24 hours.";
       }
 
       setMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
