@@ -90,10 +90,38 @@ export default function Landing() {
           <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '16px' }}>
             Every sensor. Every room.<br /><span className="gradient-text">One unified brain.</span>
           </h2>
-          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '32px' }}>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
             Watch as scattered data points converge into actionable intelligence — just like our platform unifies IoT sensors, staff positions, and guest locations into a single crisis response.
           </p>
-          <Link to="/dashboard" className="btn btn-primary btn-lg" style={{ pointerEvents: 'auto' }}>Enter the Dashboard →</Link>
+        </div>
+      </section>
+
+      {/* ═══ PAGE 3: Cubes almost joined — final convergence ═══ */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 5 }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', padding: '0 24px' }}>
+          <div className="section-label" style={{ justifyContent: 'center', marginBottom: '16px' }}>Real-Time Convergence</div>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '16px' }}>
+            From chaos to<br /><span className="gradient-text">coordinated response.</span>
+          </h2>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            In milliseconds, Sentinel AI transforms fragmented emergency data into a synchronized action plan — dispatching staff, alerting guests, and securing every floor.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══ PAGE 4: Cubes fully joined — the platform is unified ═══ */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 5 }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', padding: '0 24px' }}>
+          <div className="section-label" style={{ justifyContent: 'center', marginBottom: '16px' }}>Complete Unity</div>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '16px' }}>
+            One platform.<br /><span className="gradient-text">Zero blind spots.</span>
+          </h2>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            When every component is connected, nothing gets missed. Sentinel AI ensures 100% floor coverage, real-time tracking, and AI-guided evacuations — all from a single dashboard.
+          </p>
+          <div style={{ marginTop: '32px' }}>
+            <Link to="/dashboard" className="btn btn-primary btn-lg" style={{ pointerEvents: 'auto' }}>Enter the Dashboard →</Link>
+          </div>
         </div>
       </section>
 
