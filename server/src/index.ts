@@ -3,18 +3,11 @@ import cors from '@fastify/cors'
 
 const fastify = Fastify({ logger: true })
 
-// Lazy Prisma — won't crash if DB is unavailable
-let prisma: any = null
-try {
-  const { PrismaClient } = require('@prisma/client')
-  prisma = new PrismaClient()
-  prisma.$connect().catch((err: any) => {
-    fastify.log.warn('Database connection failed, running in mock-only mode:', err.message)
-    prisma = null
-  })
-} catch (err: any) {
-  fastify.log.warn('Prisma client not available, running in mock-only mode:', err.message)
-}
+import { FirestoreService } from './services/firebase.service'
+import { DispatchOrchestrator } from './services/orchestrator.service'
+import { AlertPayload } from './services/channels/channel.interface'
+
+const orchestrator = new DispatchOrchestrator()
 
 fastify.register(cors, { origin: true })
 
@@ -81,26 +74,9 @@ fastify.get('/health', async (request, reply) => {
 
 // Get hotel overview
 fastify.get('/api/v1/hotel/overview', async (request, reply) => {
-  if (!prisma) {
-    return { hotel: mockHotel, activeCrisis: null, recentIncidents: [] }
-  }
   try {
-    const hotel = await prisma.hotel.findFirst({
-      include: {
-        floors: {
-          include: {
-            rooms: {
-              include: { guests: true }
-            }
-          }
-        }
-      }
-    })
-
-    const incidents = await prisma.incident.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 5
-    })
+    const hotel = await FirestoreService.getHotelOverview()
+    const incidents = await FirestoreService.getRecentIncidents(5)
 
     return {
       hotel: hotel || mockHotel,
@@ -108,7 +84,7 @@ fastify.get('/api/v1/hotel/overview', async (request, reply) => {
       recentIncidents: incidents || []
     }
   } catch (err: any) {
-    fastify.log.warn('Database query failed, returning mock data:', err.message)
+    fastify.log.warn('Firestore query failed, returning mock data:', err.message)
     return {
       hotel: mockHotel,
       activeCrisis: null,
@@ -121,26 +97,43 @@ fastify.get('/api/v1/hotel/overview', async (request, reply) => {
 fastify.post('/api/v1/crisis/trigger', async (request, reply) => {
   const { type, severity, roomNum, floorNum } = request.body as any
   
-  if (!prisma) {
-    return { success: true, incident: { id: 'mock-' + Date.now(), type, severity, status: 'active', roomNum, floorNum }, message: 'Crisis triggered (mock mode)' }
-  }
   try {
-    const incident = await prisma.incident.create({
-      data: {
-        type,
-        severity,
-        status: 'active',
-        roomNum: roomNum.toString(),
-        floorNum: parseInt(floorNum),
-        note: `Crisis triggered: ${type}`
-      }
+    const incident = await FirestoreService.triggerIncident({
+      type,
+      severity,
+      roomNum: roomNum?.toString(),
+      floorNum: parseInt(floorNum),
+      note: `Crisis triggered: ${type}`
     })
-    return { success: true, incident }
+
+    // 2. Dispatch staff nearest to floor
+    await FirestoreService.dispatchStaffToFloor(parseInt(floorNum))
+
+    // 3. Trigger Master Orchestrator (Fan-out alerts)
+    const payload: AlertPayload = {
+      incidentId: incident.id,
+      message: `Emergency: ${type} reported at Room ${roomNum}, Floor ${floorNum}. Evacuate immediately.`,
+      severity: severity,
+      targetData: {
+        floor: floorNum,
+        room: roomNum,
+        phone: '+15555555555', // Mock guest phone
+        email: 'guest@example.com',
+        slackChannel: '#emergency-response'
+      }
+    }
+
+    orchestrator.dispatchCrisis(payload).catch(err => {
+      fastify.log.error(`Orchestrator failed during crisis dispatch: ${err.message}`)
+    })
+
+    return { success: true, incident, dispatchStarted: true }
   } catch (err: any) {
-    fastify.log.warn('Failed to create incident:', err.message)
+    fastify.log.warn('Failed to create incident in Firestore:', err.message)
     return { 
       success: true, 
-      message: 'Crisis triggered (database unavailable)'
+      incident: { id: 'mock-' + Date.now(), type, severity, status: 'active', roomNum, floorNum },
+      message: 'Crisis triggered (mock mode due to Firestore error)'
     }
   }
 })
@@ -167,12 +160,11 @@ fastify.post('/api/v1/chat/aegis', async (request, reply) => {
 
 // Get staff
 fastify.get('/api/v1/staff', async (request, reply) => {
-  if (!prisma) return { staff: [] }
   try {
-    const staff = await prisma.staff.findMany()
+    const staff = await FirestoreService.getStaff()
     return { staff: staff || [] }
   } catch (err: any) {
-    fastify.log.warn('Failed to fetch staff:', err.message)
+    fastify.log.warn('Failed to fetch staff from Firestore:', err.message)
     return { staff: [] }
   }
 })
@@ -180,16 +172,12 @@ fastify.get('/api/v1/staff', async (request, reply) => {
 // Resolve crisis
 fastify.post('/api/v1/crisis/resolve', async (request, reply) => {
   const { id } = request.body as any
-  if (!prisma) return { success: true, message: 'Crisis resolved (mock mode)' }
   try {
-    const incident = await prisma.incident.update({
-      where: { id },
-      data: { status: 'resolved', resolvedAt: new Date() }
-    })
+    const incident = await FirestoreService.resolveIncident(id)
     return { success: true, incident }
   } catch (err: any) {
-    fastify.log.warn('Failed to resolve incident:', err.message)
-    return { success: true, message: 'Crisis resolved' }
+    fastify.log.warn('Failed to resolve incident in Firestore:', err.message)
+    return { success: true, message: 'Crisis resolved (local update failed)' }
   }
 })
 
