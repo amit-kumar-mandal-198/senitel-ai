@@ -67,89 +67,88 @@ export default function GuestChat({ embedded }) {
   }
 
   const content = (
-    <div style={{ display: 'grid', gridTemplateColumns: embedded ? '1fr' : 'minmax(0, 1fr) 350px', gap: '20px', height: '100%' }}>
+    <div className={`grid gap-6 h-full ${embedded ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-[1fr_350px]'}`}>
       {/* Chat Window */}
-      <div className={embedded ? "" : "dash-card"} style={{ padding: 0, display: 'flex', flexDirection: 'column', height: embedded ? '100%' : '600px', border: embedded ? 'none' : undefined }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-primary)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--gradient-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', paddingLeft:'4px' }}>🤖</div>
+      <div className={`flex flex-col overflow-hidden bg-slate-900/60 backdrop-blur-xl border border-white/10 ${embedded ? 'h-full rounded-none border-none' : 'h-[600px] rounded-3xl shadow-2xl'}`}>
+          <div className="p-4 border-b border-white/10 flex items-center justify-between bg-slate-800/50">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-xl shadow-lg border border-white/20">🤖</div>
               <div>
-                <div style={{ fontWeight: '700', color: 'var(--text-primary)', fontSize: '15px' }}>Aegis - Claude 3</div>
-                <div style={{ fontSize: '12px', color: crisisActive ? '#EF4444' : '#10B981' }}>
+                <div className="font-bold text-slate-100 text-sm">Aegis - Claude 3</div>
+                <div className={`text-xs font-medium ${crisisActive ? 'text-red-400' : 'text-emerald-400'}`}>
                   {crisisActive ? `🔴 Crisis Active — ${crisisType} at Rm ${crisisRoom}` : '🟢 All Clear'}
                 </div>
               </div>
             </div>
-            <div style={{ fontSize: '12px', color: 'var(--text-tertiary)' }}>Guest Room: {room}</div>
+            <div className="text-xs text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-white/5">Room: {room}</div>
           </div>
 
-          <div ref={chatRef} style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div ref={chatRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth">
             {messages.map((msg, i) => (
               <div key={i}
-                className={msg.role === 'assistant' ? 'chat-bubble-bot' : 'chat-bubble-user'}
-                style={{
-                maxWidth: '80%',
-                padding: '12px 16px',
-                borderRadius: msg.role === 'assistant' ? '12px 12px 12px 4px' : '12px 12px 4px 12px',
-                alignSelf: msg.role === 'assistant' ? 'flex-start' : 'flex-end',
-                color: msg.role === 'user' ? 'white' : undefined,
-                fontSize: '14px',
-                lineHeight: '1.5',
-                whiteSpace: 'pre-line',
-              }}>
+                className={`max-w-[80%] p-4 text-sm leading-relaxed whitespace-pre-line backdrop-blur-md shadow-lg border border-white/5 ${
+                  msg.role === 'assistant' 
+                    ? 'bg-slate-800/80 text-slate-200 rounded-2xl rounded-bl-sm self-start' 
+                    : 'bg-blue-600/80 text-white rounded-2xl rounded-br-sm self-end'
+                }`}
+              >
                 {msg.text}
               </div>
             ))}
             {isTyping && (
-              <div style={{ padding: '12px 16px', borderRadius: '12px 12px 12px 4px', background: 'var(--bg-tertiary)', alignSelf: 'flex-start', color: 'var(--text-tertiary)', fontSize: '14px', border: '1px solid var(--border-primary)' }}>
+              <div className="max-w-[80%] p-4 text-sm bg-slate-800/50 text-slate-400 rounded-2xl rounded-bl-sm self-start backdrop-blur-md border border-white/5 animate-pulse">
                 ● ● ●
               </div>
             )}
           </div>
 
-          <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border-primary)', display: 'flex', gap: '8px' }}>
+          <div className="p-4 border-t border-white/10 bg-slate-800/50 flex gap-3">
             <input
               type="text"
-              className="dash-input"
+              className="flex-1 bg-slate-900/50 text-slate-100 placeholder-slate-500 border border-white/10 rounded-full px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && sendMessage()}
               placeholder="Message Aegis..."
-              style={{ marginBottom: 0 }}
             />
-            <button className="btn btn-primary" onClick={sendMessage} disabled={isTyping} style={{ flexShrink: 0 }}>Send</button>
+            <button 
+              className="bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-full px-6 py-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0 shadow-lg shadow-blue-900/20"
+              onClick={sendMessage} 
+              disabled={isTyping}
+            >
+              Send
+            </button>
           </div>
         </div>
 
         {/* Controls Panel - Hide if embedded */}
         {!embedded && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div className="dash-card">
-              <h3 style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '12px' }}>🎮 Claude Routing Demo</h3>
+          <div className="flex flex-col gap-4">
+            <div className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-xl">
+              <h3 className="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">🎮 Claude Routing Demo</h3>
 
-              <div className="dash-field">
-                <label className="dash-label">Your Room (Guest)</label>
-                <select className="dash-input" value={room} onChange={e => setRoom(e.target.value)} style={{ marginBottom: 0 }}>
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-slate-400 mb-1">Your Room (Guest)</label>
+                <select className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50" value={room} onChange={e => setRoom(e.target.value)}>
                   {['301','302','303','304','305','306','307','308','309','310'].map(r => (
                     <option key={r} value={r}>Room {r}</option>
                   ))}
                 </select>
               </div>
 
-              <div className="dash-field">
-                <label className="dash-label">Simulate Crisis Status</label>
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-slate-400 mb-1">Simulate Crisis Status</label>
                 <button
-                  className="btn"
+                  className={`w-full py-2 px-4 rounded-xl font-medium border transition-colors ${crisisActive ? 'bg-red-500/10 text-red-400 border-red-500/30 hover:bg-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'}`}
                   onClick={() => setCrisisActive(!crisisActive)}
-                  style={{ width: '100%', background: crisisActive ? 'rgba(220,38,38,0.15)' : 'rgba(16,185,129,0.15)', color: crisisActive ? '#EF4444' : '#10B981', border: `1px solid ${crisisActive ? 'rgba(220,38,38,0.3)' : 'rgba(16,185,129,0.3)'}` }}
                 >
                   {crisisActive ? '🔴 Crisis ON' : '🟢 Crisis OFF'}
                 </button>
               </div>
 
-              <div className="dash-field">
-                <label className="dash-label">Crisis Type</label>
-                <select className="dash-input" value={crisisType} onChange={e => setCrisisType(e.target.value)} style={{ marginBottom: 0 }}>
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-slate-400 mb-1">Crisis Type</label>
+                <select className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50" value={crisisType} onChange={e => setCrisisType(e.target.value)}>
                   <option value="fire">🔥 Fire</option>
                   <option value="flood">🌊 Flood</option>
                   <option value="medical">🏥 Medical</option>
@@ -158,16 +157,16 @@ export default function GuestChat({ embedded }) {
                 </select>
               </div>
 
-              <div className="dash-field">
-                <label className="dash-label">Crisis Origin Location</label>
-                <select className="dash-input" value={crisisRoom} onChange={e => setCrisisRoom(e.target.value)} style={{ marginBottom: 0 }}>
+              <div className="mb-4">
+                <label className="block text-xs font-medium text-slate-400 mb-1">Crisis Origin Location</label>
+                <select className="w-full bg-slate-800 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50" value={crisisRoom} onChange={e => setCrisisRoom(e.target.value)}>
                   {['301','302','303','304','305','306','307','308','309','310'].map(r => (
                     <option key={r} value={r}>Room {r}</option>
                   ))}
                 </select>
               </div>
               
-              <p style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '12px' }}>
+              <p className="text-[11px] text-slate-500 mt-4 leading-relaxed">
                 Note: Claude is instructed that North stairs are near x08-x10 and South stairs are near x01-x03. Test its reasoning by placing the fire near your chosen stairwell!
               </p>
             </div>
