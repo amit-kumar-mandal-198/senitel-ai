@@ -15,6 +15,9 @@ export default function Landing() {
 
   return (
     <>
+      {/* FIXED 3D CANVAS — stays behind entire page as you scroll */}
+      <ThreeShield />
+
       {/* NAVBAR */}
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`} id="navbar">
         <div className="container">
@@ -37,22 +40,10 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* HERO WITH 3D WEBGL SHIELD */}
+      {/* ═══ PAGE 1: HERO TEXT — cubes are spread far apart in background ═══ */}
       <section className="hero" id="hero" style={{ position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
-        
-        {/* Original 3D Shields / Geometric Core — centered behind text */}
-        <div style={{
-          position: 'absolute',
-          inset: 0,
-          zIndex: 0,
-          pointerEvents: 'none',
-        }}>
-          <ThreeShield />
-        </div>
-        
-        <div className="hero-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', gap: '40px', maxWidth: '1200px', width: '100%', margin: '0 auto', textAlign: 'left', pointerEvents: 'none', position: 'relative', zIndex: 10 }}>
+        <div className="hero-content" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', gap: '40px', maxWidth: '1200px', width: '100%', margin: '0 auto', textAlign: 'left', position: 'relative', zIndex: 10 }}>
           
-          {/* Left Text Content */}
           <div style={{ pointerEvents: 'auto' }}>
             <div className="hero-badge" style={{ display: 'inline-flex', marginBottom: '24px' }}>
               <span className="hero-badge-tag">NEW</span>
@@ -88,8 +79,49 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Right side is intentionally left empty so the massive 3D object can breathe and be interacted with */}
           <div></div>
+        </div>
+      </section>
+
+      {/* ═══ PAGE 2: Scroll storytelling — cubes converging ═══ */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 5 }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', padding: '0 24px' }}>
+          <div className="section-label" style={{ justifyContent: 'center', marginBottom: '16px' }}>Intelligent Protection</div>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '16px' }}>
+            Every sensor. Every room.<br /><span className="gradient-text">One unified brain.</span>
+          </h2>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            Watch as scattered data points converge into actionable intelligence — just like our platform unifies IoT sensors, staff positions, and guest locations into a single crisis response.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══ PAGE 3: Cubes almost joined — final convergence ═══ */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 5 }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', padding: '0 24px' }}>
+          <div className="section-label" style={{ justifyContent: 'center', marginBottom: '16px' }}>Real-Time Convergence</div>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '16px' }}>
+            From chaos to<br /><span className="gradient-text">coordinated response.</span>
+          </h2>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            In milliseconds, Sentinel AI transforms fragmented emergency data into a synchronized action plan — dispatching staff, alerting guests, and securing every floor.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══ PAGE 4: Cubes fully joined — the platform is unified ═══ */}
+      <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', zIndex: 5 }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', padding: '0 24px' }}>
+          <div className="section-label" style={{ justifyContent: 'center', marginBottom: '16px' }}>Complete Unity</div>
+          <h2 style={{ fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '16px' }}>
+            One platform.<br /><span className="gradient-text">Zero blind spots.</span>
+          </h2>
+          <p style={{ fontSize: '18px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            When every component is connected, nothing gets missed. Sentinel AI ensures 100% floor coverage, real-time tracking, and AI-guided evacuations — all from a single dashboard.
+          </p>
+          <div style={{ marginTop: '32px' }}>
+            <Link to="/dashboard" className="btn btn-primary btn-lg" style={{ pointerEvents: 'auto' }}>Enter the Dashboard →</Link>
+          </div>
         </div>
       </section>
 
