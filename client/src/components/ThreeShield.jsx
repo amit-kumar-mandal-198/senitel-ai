@@ -4,27 +4,10 @@ import { Stars, RoundedBox, Environment } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
-// ─── Scroll progress: 0 at top → 1 after scrolling ~3000px ───
-function useScrollProgress() {
-  const [progress, setProgress] = useState(0)
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY
-      // Animation spans 3000px of scroll = ~3.5 viewport heights
-      const maxScroll = 3000
-      setProgress(Math.min(scrollY / maxScroll, 1))
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  return progress
-}
 
 // ─── Single iridescent cube with scroll-driven position ───
-function IridescentCube({ startPos, endPos, scrollProgress, scale = 1, rotSpeed = 0.15 }) {
+function IridescentCube({ startPos, scale = 1, rotSpeed = 0.15 }) {
   const meshRef = useRef()
   const smoothPos = useRef(new THREE.Vector3(...startPos))
   const targetPos = useRef(new THREE.Vector3())
@@ -38,21 +21,15 @@ function IridescentCube({ startPos, endPos, scrollProgress, scale = 1, rotSpeed 
     meshRef.current.rotation.y = t * rotSpeed * 1.3
     meshRef.current.rotation.z = t * rotSpeed * 0.6
 
-    // Position: lerp from startPos (spread) → endPos (joined) based on scroll
-    const eased = easeInOutCubic(scrollProgress)
-    targetPos.current.set(
-      THREE.MathUtils.lerp(startPos[0], endPos[0], eased),
-      THREE.MathUtils.lerp(startPos[1], endPos[1], eased),
-      THREE.MathUtils.lerp(startPos[2], endPos[2], eased),
-    )
+    // Position: stay at startPos
+    targetPos.current.set(startPos[0], startPos[1], startPos[2])
 
     // Smooth interpolation for buttery movement
     smoothPos.current.lerp(targetPos.current, 0.06)
     meshRef.current.position.copy(smoothPos.current)
 
-    // Scale: start big when spread, normal when joined
-    const scaleMultiplier = THREE.MathUtils.lerp(1.3, 1, eased)
-    meshRef.current.scale.setScalar(scale * scaleMultiplier)
+    // Scale: fixed scale
+    meshRef.current.scale.setScalar(scale * 1.3)
   })
 
   return (
@@ -84,7 +61,7 @@ function easeInOutCubic(t) {
 // ─── The complete cube cluster ───
 // START: cubes are far apart, some off-screen (spread/disjoined)
 // END: cubes form tight cross cluster (joined)
-function CubeCluster({ scrollProgress }) {
+function CubeCluster() {
   const groupRef = useRef()
 
   useFrame((state) => {
@@ -131,8 +108,6 @@ function CubeCluster({ scrollProgress }) {
         <IridescentCube
           key={i}
           startPos={cube.start}
-          endPos={cube.end}
-          scrollProgress={scrollProgress}
           scale={cube.scale}
           rotSpeed={cube.rot}
         />
@@ -146,7 +121,7 @@ function FloatingParticles() {
 }
 
 // ─── Inner 3D scene ───
-function Scene({ scrollProgress }) {
+function Scene() {
   return (
     <>
       <color attach="background" args={['#020617']} />
@@ -163,7 +138,7 @@ function Scene({ scrollProgress }) {
       {/* Environment for metallic reflections */}
       <Environment preset="night" />
 
-      <CubeCluster scrollProgress={scrollProgress} />
+      <CubeCluster />
       <FloatingParticles />
 
       <EffectComposer disableNormalPass>
@@ -180,20 +155,18 @@ function Scene({ scrollProgress }) {
 
 // ─── Main export: sticky 3D canvas that stays fixed while page scrolls ───
 export default function ThreeShield() {
-  const scrollProgress = useScrollProgress()
-
   return (
     <div style={{
       width: '100%',
       height: '100vh',
-      position: 'fixed',
+      position: 'absolute',
       top: 0,
       left: 0,
       zIndex: 0,
       pointerEvents: 'none',
     }}>
       <Canvas camera={{ position: [0, 0, 7], fov: 50 }} dpr={[1, 2]} style={{ pointerEvents: 'none' }}>
-        <Scene scrollProgress={scrollProgress} />
+        <Scene />
       </Canvas>
     </div>
   )

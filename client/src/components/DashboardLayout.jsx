@@ -3,6 +3,7 @@ import { Outlet, NavLink, Link, useLocation } from 'react-router-dom'
 import '../styles/dashboard.css'
 import ThemeToggle from './ThemeToggle'
 import AegisCommand from './AegisCommand'
+import SpaceBackground from './SpaceBackground'
 
 const NAV_ITEMS = [
   { path: '/dashboard', icon: '🏨', label: 'Hotel Overview', exact: true },
@@ -24,6 +25,7 @@ export default function DashboardLayout() {
 
   return (
     <div className={`dash-layout ${sidebarCollapsed ? 'collapsed' : ''}`}>
+      <SpaceBackground />
       <aside className={`dash-sidebar ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="dash-sidebar-header">
           <Link to="/" className="dash-brand">

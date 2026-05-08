@@ -7,14 +7,17 @@
 .dash-layout {
   display: flex;
   min-height: 100vh;
-  background: var(--bg-primary);
+  background: transparent;
+  position: relative;
 }
 
 /* === SIDEBAR === */
 .dash-sidebar {
   width: 260px;
   min-width: 260px;
-  background: var(--bg-secondary);
+  background: rgba(2, 6, 23, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-right: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
@@ -193,7 +196,9 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-primary);
-  background: var(--bg-secondary);
+  background: rgba(2, 6, 23, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   position: sticky;
   top: 0;
   z-index: calc(var(--z-nav) - 1);
@@ -328,6 +333,8 @@
   flex: 1;
   padding: var(--space-6);
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .dash-page {
