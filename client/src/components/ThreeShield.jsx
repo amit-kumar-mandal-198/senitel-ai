@@ -11,8 +11,8 @@ function useScrollProgress() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
-      // Animation spans 3000px of scroll = ~3.5 viewport heights
-      const maxScroll = 3000
+      // Animation spans ~1200px of scroll (about 1.5 - 2 viewport heights)
+      const maxScroll = 1200
       setProgress(Math.min(scrollY / maxScroll, 1))
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -95,34 +95,34 @@ function CubeCluster({ scrollProgress }) {
     groupRef.current.rotation.x = Math.sin(t * 0.03) * 0.08
   })
 
-  // Each cube: [startPos (spread/off-screen), endPos (joined cross)]
+    // Each cube: [startPos (spread but closer), endPos (joined cross)]
   const cubes = [
     // === CENTER (stays roughly in place) ===
-    { start: [0, 0, 2],          end: [0, 0, 0],           scale: 1.2,  rot: 0.12 },
+    { start: [0, 0, 1],          end: [0, 0, 0],           scale: 1.2,  rot: 0.12 },
 
-    // === CROSS ARMS — fly in from far away ===
-    // Top: flies from way above
-    { start: [1, 8, -3],         end: [0, 1.15, 0],        scale: 1.05, rot: 0.15 },
-    // Bottom: flies from way below
-    { start: [-1.5, -9, -2],     end: [0, -1.15, 0],       scale: 1.05, rot: 0.13 },
-    // Left: flies from far left
-    { start: [-10, 1, -1],       end: [-1.15, 0, 0],       scale: 1.05, rot: 0.17 },
-    // Right: flies from far right
-    { start: [10, -0.5, -2],     end: [1.15, 0, 0],        scale: 1.05, rot: 0.14 },
-    // Front: flies from behind camera
-    { start: [0.5, 0.5, 8],      end: [0, 0, 1.15],        scale: 1.0,  rot: 0.16 },
-    // Back: flies from far back
-    { start: [-0.5, -1, -10],    end: [0, 0, -1.15],       scale: 1.0,  rot: 0.11 },
+    // === CROSS ARMS — fly in from nearby ===
+    // Top:
+    { start: [0.5, 3.5, -1],     end: [0, 1.15, 0],        scale: 1.05, rot: 0.15 },
+    // Bottom:
+    { start: [-0.5, -3.5, -1],   end: [0, -1.15, 0],       scale: 1.05, rot: 0.13 },
+    // Left:
+    { start: [-4, 0.5, 0],       end: [-1.15, 0, 0],       scale: 1.05, rot: 0.17 },
+    // Right:
+    { start: [4, -0.2, 0],       end: [1.15, 0, 0],        scale: 1.05, rot: 0.14 },
+    // Front:
+    { start: [0.2, 0.2, 3.5],    end: [0, 0, 1.15],        scale: 1.0,  rot: 0.16 },
+    // Back:
+    { start: [-0.2, -0.5, -4],   end: [0, 0, -1.15],       scale: 1.0,  rot: 0.11 },
 
-    // === DIAGONAL ACCENTS — fly in from corners ===
-    { start: [8, 7, 3],          end: [0.95, 0.95, 0],     scale: 0.8,  rot: 0.18 },
-    { start: [-9, 7, 2],         end: [-0.95, 0.95, 0],    scale: 0.8,  rot: 0.14 },
-    { start: [7, -8, -3],        end: [0.95, -0.95, 0],    scale: 0.75, rot: 0.19 },
-    { start: [-8, -7, -4],       end: [-0.95, -0.95, 0],   scale: 0.75, rot: 0.13 },
+    // === DIAGONAL ACCENTS ===
+    { start: [2.5, 2.5, 1],      end: [0.95, 0.95, 0],     scale: 0.8,  rot: 0.18 },
+    { start: [-2.5, 2.5, 0.5],   end: [-0.95, 0.95, 0],    scale: 0.8,  rot: 0.14 },
+    { start: [2.5, -2.5, -1],    end: [0.95, -0.95, 0],    scale: 0.75, rot: 0.19 },
+    { start: [-2.5, -2.5, -1.5], end: [-0.95, -0.95, 0],   scale: 0.75, rot: 0.13 },
 
-    // === DEPTH CORNERS — from deep z positions ===
-    { start: [5, 3, 9],          end: [0.8, 0, 0.8],       scale: 0.7,  rot: 0.16 },
-    { start: [-4, -2, -11],      end: [-0.8, 0, -0.8],     scale: 0.7,  rot: 0.15 },
+    // === DEPTH CORNERS ===
+    { start: [2, 1, 3],          end: [0.8, 0, 0.8],       scale: 0.7,  rot: 0.16 },
+    { start: [-2, -1, -4],       end: [-0.8, 0, -0.8],     scale: 0.7,  rot: 0.15 },
   ]
 
   return (
