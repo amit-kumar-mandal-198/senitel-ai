@@ -335,7 +335,7 @@ export default function DashboardOverview() {
               Floor {floorData.level}
             </div>
             <div className="hotel-floor-grid">
-              {floorData.rooms.sort((a,b)=>a.number.localeCompare(b.number)).map(room => {
+              {floorData.rooms.sort((a,b)=>(a.number||'').localeCompare(b.number||'')).map(room => {
                 const isCrisis = activeCrisis?.roomNum === room.number
                 // Nearby calculation based on room numbers
                 const cNum = parseInt(activeCrisis?.roomNum || '0')
@@ -344,7 +344,7 @@ export default function DashboardOverview() {
                 const isInDanger = activeCrisis && isSameFloor && Math.abs(rNum - cNum) <= 3 && rNum !== cNum
                 
                 if (isInDanger && room.status === 'occupied') {
-                  guestsInDangerCount += room.guests.length
+                  guestsInDangerCount += (room.guests || []).length
                 }
 
                 let roomClass = 'hotel-room safe'
@@ -386,7 +386,7 @@ export default function DashboardOverview() {
               <div className="dash-alert-info">
                 <div className="dash-alert-title">
                   <span className="dash-severity-badge" style={{ color: statusColors[inc.status] || '#10B981', background: `${statusColors[inc.status] || '#10B981'}15` }}>
-                    {inc.status.toUpperCase()}
+                    {(inc.status || 'unknown').toUpperCase()}
                   </span>
                   {inc.note || inc.type}
                 </div>
