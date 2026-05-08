@@ -113,39 +113,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ═══ FEATURES GRID ═══ */}
-      <section className="section" id="features">
-        <div className="container">
-          <div className="section-label">Platform Features</div>
-          <h2 className="section-title">Everything Your Hotel Needs for Crisis Response</h2>
-          <p className="section-subtitle">Built specifically for hospitality — not repurposed from government CEM systems.</p>
-          <div className="features-grid">
-            {[
-              { icon: '🗺️', color: 'blue', title: 'Live Floor Map', desc: 'Real-time visual of every floor with room-by-room status.', tag: 'Visual Command Center' },
-              { icon: '🤖', color: 'purple', title: 'AI Guest Chat (Aegis)', desc: 'Panicking guests chat with Aegis AI for real-time personalized evacuation.', tag: '⚡ Core Feature', critical: true },
-              { icon: '🚨', color: 'red', title: 'One-Click Crisis Trigger', desc: 'Manager triggers crisis in 1 click — select type and location. Everything else is automated.', tag: 'Instant Activation' },
-              { icon: '🔔', color: 'orange', title: 'Smart Room Alerts', desc: 'Only alert rooms in danger. AI calculates proximity and evacuates necessary areas.', tag: 'No False Alarms' },
-              { icon: '👥', color: 'green', title: 'Guest Tracking', desc: 'Track which guests responded, who needs help, and who hasn\'t been reached.', tag: 'Life Safety' },
-              { icon: '📊', color: 'cyan', title: 'Crisis Dashboard', desc: 'Real-time KPIs: rooms cleared, guests evacuated, staff deployed, response time.', tag: 'Real-Time Intel' },
-              { icon: '📱', color: 'pink', title: 'Staff Dispatch', desc: 'Automatically dispatch security and maintenance. Track positions and task completion.', tag: 'Coordinated Response' },
-              { icon: '📋', color: 'teal', title: 'Incident Reports', desc: 'AI generates post-incident reports with timeline, response metrics, and suggestions.', tag: 'Post-Crisis Analysis' },
-            ].map((f, i) => (
-              <motion.div
-                className="feature-card" key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.06 }}
-              >
-                <div className={`feature-icon ${f.color}`}>{f.icon}</div>
-                <h3>{f.title}</h3>
-                <p>{f.desc}</p>
-                <span className={`feature-tag ${f.critical ? 'critical' : ''}`}>{f.tag}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* ═══ CRISIS TYPES ═══ */}
       <section className="section" id="crisis-types">
