@@ -44,7 +44,6 @@ export default function GuestOverview() {
       <SafetyCheckIn />
       <DemoToolbar />
       
-
       <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '24px', alignItems: 'start' }}>
         
         {/* Left Sidebar */}
@@ -58,10 +57,10 @@ export default function GuestOverview() {
                 onClick={triggerSOS}
                 style={{
                   width: '140px', height: '140px', borderRadius: '50%',
-                  background: 'linear-gradient(145deg, #1e293b, #0f172a)',
-                  border: '2px solid rgba(220,38,38,0.5)',
-                  color: '#ef4444', fontSize: '36px', fontWeight: '900', letterSpacing: '2px',
-                  cursor: 'pointer', boxShadow: '0 10px 30px rgba(220,38,38,0.2), inset 0 0 20px rgba(0,0,0,0.5)',
+                  background: 'linear-gradient(145deg, #ef4444, #dc2626)',
+                  border: '4px solid rgba(255,255,255,0.2)',
+                  color: 'white', fontSize: '36px', fontWeight: '900', letterSpacing: '2px',
+                  cursor: 'pointer', boxShadow: '0 10px 40px rgba(220,38,38,0.4), inset 0 0 20px rgba(255,255,255,0.2)',
                   transition: 'all 0.2s',
                   display: 'flex', alignItems: 'center', justifyContent: 'center'
                 }}
