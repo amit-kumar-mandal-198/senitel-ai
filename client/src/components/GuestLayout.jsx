@@ -23,10 +23,10 @@ export default function GuestLayout() {
           </div>
           
           <div className="dash-header-right">
-            <Link to="/guest/crisis" style={{
+            <Link to="/guest/chat" style={{
               padding: '8px 16px',
-              background: 'linear-gradient(135deg, #DC2626, #991B1B)',
-              border: '1px solid rgba(220, 38, 38, 0.5)',
+              background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+              border: '1px solid rgba(59, 130, 246, 0.5)',
               borderRadius: '10px',
               color: '#fff',
               fontWeight: '700',
@@ -35,10 +35,10 @@ export default function GuestLayout() {
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: '0 2px 12px rgba(220, 38, 38, 0.3)',
+              boxShadow: '0 2px 12px rgba(59, 130, 246, 0.3)',
               transition: 'all 0.2s',
             }}>
-              🚨 Report Emergency
+              🤖 AI Assistant
             </Link>
             <button className="btn btn-outline" onClick={() => alert("Help is on the way. Please use the Guest AI Chat for immediate guidance.")} style={{ padding: '6px 12px', fontSize: '13px' }}>
                ℹ️ Help Mode
