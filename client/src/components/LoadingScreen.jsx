@@ -7,12 +7,12 @@ export default function LoadingScreen({ isLoading }) {
   useEffect(() => {
     if (isLoading) {
       const iv = setInterval(() => {
-        setProgress((p) => (p >= 88 ? (clearInterval(iv), 88) : p + Math.random() * 12))
-      }, 180)
+        setProgress((p) => (p >= 88 ? (clearInterval(iv), 88) : p + Math.random() * 20))
+      }, 80)
       return () => clearInterval(iv)
     } else {
       setProgress(100)
-      const t = setTimeout(() => setVisible(false), 900)
+      const t = setTimeout(() => setVisible(false), 400)
       return () => clearTimeout(t)
     }
   }, [isLoading])

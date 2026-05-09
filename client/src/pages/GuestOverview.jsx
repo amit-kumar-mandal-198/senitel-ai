@@ -8,6 +8,8 @@ import GuestChat from '../components/guest/GuestChat'
 
 export default function GuestOverview() {
   const [activeCrisis, setActiveCrisis] = useState(null)
+  const guestRoom = localStorage.getItem('sentinel_guest_room') || '305'
+  const guestFloor = parseInt(guestRoom.charAt(0)) || 1
   
   useEffect(() => {
     const fetchData = async () => {
@@ -27,12 +29,12 @@ export default function GuestOverview() {
   }, [])
 
   const triggerSOS = async () => {
-    if (window.confirm("TRIGGER EMERGENCY SOS? This alerts management immediately.")) {
+    if (window.confirm(`TRIGGER EMERGENCY SOS from Room ${guestRoom}? This alerts management immediately.`)) {
       try {
         await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'medical', severity: 'high', roomNum: 'GUEST-SOS', floorNum: 1 })
+          body: JSON.stringify({ type: 'medical', severity: 'critical', roomNum: guestRoom, floorNum: guestFloor })
         });
         alert('SOS Triggered. Help is on the way.');
       } catch(err) { console.error(err); }

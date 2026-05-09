@@ -22,6 +22,7 @@ export default function DashboardOverview() {
   const [isOffline, setIsOffline] = useState(!navigator.onLine)
   const [responderMode, setResponderMode] = useState(false)
   const [activeEmergencyId, setActiveEmergencyId] = useState(null)
+  const [sosAlert, setSosAlert] = useState(null) // { room, type, time }
 
   const propertyId = "PROP-01"; // Consistent property ID for demo
 
@@ -178,9 +179,23 @@ export default function DashboardOverview() {
         };
       });
 
+      // Show SOS alert banner for manager
+      setSosAlert({
+        room: payload.incident.roomNum,
+        type: payload.incident.type,
+        severity: payload.incident.severity,
+        floor: payload.incident.floorNum,
+        time: new Date().toLocaleTimeString()
+      });
+
+      // Auto dismiss after 15 seconds
+      setTimeout(() => setSosAlert(null), 15000);
+
       // Voice notification
       if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance(`Warning: ${payload.incident.type} reported in room ${payload.incident.roomNum}.`);
+        const msg = new SpeechSynthesisUtterance(`Critical SOS Alert! Room ${payload.incident.roomNum} is in crisis! ${payload.incident.type} emergency reported. Immediate response required.`);
+        msg.rate = 0.9;
+        msg.pitch = 0.8;
         window.speechSynthesis.speak(msg);
       }
     });
@@ -239,6 +254,131 @@ export default function DashboardOverview() {
   
   return (
     <div className="dash-overview">
+      {/* SOS ALERT OVERLAY — shown when guest triggers SOS */}
+      {sosAlert && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 99998,
+          background: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          animation: 'fadeIn 0.3s ease-out',
+        }}>
+          <div style={{
+            background: 'linear-gradient(145deg, #1a0000, #2d0a0a)',
+            border: '3px solid #dc2626',
+            borderRadius: '24px',
+            padding: '48px 64px',
+            textAlign: 'center',
+            maxWidth: '600px',
+            width: '90%',
+            boxShadow: '0 0 80px rgba(220,38,38,0.5), 0 0 200px rgba(220,38,38,0.2)',
+            animation: 'pulse-glow 1.5s infinite alternate',
+          }}>
+            {/* Blinking Alert Icon */}
+            <div style={{
+              fontSize: '64px',
+              marginBottom: '16px',
+              animation: 'pulse-glow 0.8s infinite alternate',
+            }}>🚨</div>
+
+            <div style={{
+              fontSize: '14px',
+              fontWeight: '900',
+              color: '#ef4444',
+              textTransform: 'uppercase',
+              letterSpacing: '4px',
+              marginBottom: '8px',
+            }}>⚠ SOS CRISIS ALERT ⚠</div>
+
+            <div style={{
+              fontSize: '72px',
+              fontWeight: '900',
+              color: '#ffffff',
+              lineHeight: 1.1,
+              textShadow: '0 4px 30px rgba(220,38,38,0.6)',
+              margin: '16px 0',
+            }}>
+              ROOM {sosAlert.room}
+            </div>
+
+            <div style={{
+              fontSize: '16px',
+              fontWeight: '700',
+              color: '#fca5a5',
+              marginBottom: '8px',
+            }}>IS IN CRISIS</div>
+
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(220,38,38,0.2)',
+              border: '1px solid rgba(220,38,38,0.4)',
+              borderRadius: '12px',
+              padding: '8px 20px',
+              marginTop: '12px',
+              marginBottom: '24px',
+            }}>
+              <span style={{ fontSize: '20px' }}>
+                {sosAlert.type === 'fire' ? '🔥' : sosAlert.type === 'medical' ? '🏥' : sosAlert.type === 'security' ? '🔒' : sosAlert.type === 'flood' ? '🌊' : sosAlert.type === 'gas' ? '💨' : '🚨'}
+              </span>
+              <span style={{ fontSize: '18px', fontWeight: '800', color: '#fbbf24', textTransform: 'uppercase' }}>
+                {sosAlert.type} Emergency
+              </span>
+            </div>
+
+            <div style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '24px' }}>
+              Alert received at {sosAlert.time} — Floor {sosAlert.floor || '?'}
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={() => setSosAlert(null)}
+                style={{
+                  background: 'linear-gradient(to bottom, #dc2626, #991b1b)',
+                  color: 'white',
+                  fontWeight: '800',
+                  fontSize: '14px',
+                  padding: '14px 32px',
+                  borderRadius: '12px',
+                  border: '2px solid #7f1d1d',
+                  cursor: 'pointer',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  boxShadow: '0 4px 20px rgba(220,38,38,0.4)',
+                  transition: 'all 0.15s',
+                }}
+                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                🚨 Acknowledge & Respond
+              </button>
+              <button
+                onClick={() => setSosAlert(null)}
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  color: '#94a3b8',
+                  fontWeight: '600',
+                  fontSize: '13px',
+                  padding: '14px 24px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-8 space-y-6">
         <EmergencyControlPanel />
         <PredictiveDashboard propertyId={propertyId} />

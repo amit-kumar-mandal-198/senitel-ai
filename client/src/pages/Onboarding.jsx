@@ -5,6 +5,8 @@ import '../styles/dashboard.css'
 export default function Onboarding() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [showRoomPrompt, setShowRoomPrompt] = useState(false)
+  const [guestRoom, setGuestRoom] = useState('')
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
@@ -23,10 +25,24 @@ export default function Onboarding() {
   }
 
   const finishOnboarding = (role) => {
+    if (role === 'guest') {
+      setShowRoomPrompt(true)
+      return
+    }
     setLoading(true)
     localStorage.setItem('sentinel_role', role)
     setTimeout(() => {
-      navigate(role === 'manager' ? '/dashboard' : '/guest')
+      navigate('/dashboard')
+    }, 2000)
+  }
+
+  const confirmGuestRoom = () => {
+    if (!guestRoom.trim()) return
+    setLoading(true)
+    localStorage.setItem('sentinel_role', 'guest')
+    localStorage.setItem('sentinel_guest_room', guestRoom.trim())
+    setTimeout(() => {
+      navigate('/guest')
     }, 2000)
   }
 
@@ -190,6 +206,83 @@ export default function Onboarding() {
           </div>
         </div>
       </div>
+
+      {/* GUEST ROOM NUMBER PROMPT MODAL */}
+      {showRoomPrompt && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 99999,
+          background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{
+            background: 'linear-gradient(145deg, #0f172a, #1e293b)',
+            border: '2px solid rgba(59,130,246,0.3)',
+            borderRadius: '24px', padding: '48px', textAlign: 'center',
+            maxWidth: '460px', width: '90%',
+            boxShadow: '0 0 60px rgba(59,130,246,0.15), 0 25px 50px rgba(0,0,0,0.5)',
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏨</div>
+            <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#f1f5f9', margin: '0 0 8px 0' }}>
+              Welcome, Guest!
+            </h2>
+            <p style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 32px 0', lineHeight: 1.5 }}>
+              Please enter your room number to personalize your safety experience.
+            </p>
+
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px', textAlign: 'left' }}>
+                Room Number
+              </label>
+              <input
+                type="text"
+                value={guestRoom}
+                onChange={e => setGuestRoom(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && confirmGuestRoom()}
+                placeholder=""
+                autoFocus
+                style={{
+                  width: '100%', padding: '16px 20px',
+                  background: '#0f172a', border: '2px solid rgba(59,130,246,0.3)',
+                  borderRadius: '12px', color: '#f1f5f9',
+                  fontSize: '28px', fontWeight: '800', textAlign: 'center',
+                  letterSpacing: '4px', outline: 'none',
+                  fontFamily: 'var(--font-mono, monospace)',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={e => e.target.style.borderColor = '#3b82f6'}
+                onBlur={e => e.target.style.borderColor = 'rgba(59,130,246,0.3)'}
+              />
+            </div>
+
+            <button
+              onClick={confirmGuestRoom}
+              disabled={!guestRoom.trim() || loading}
+              style={{
+                width: '100%', padding: '16px',
+                background: guestRoom.trim() ? 'linear-gradient(135deg, #2563EB, #1D4ED8)' : '#1e293b',
+                color: guestRoom.trim() ? '#fff' : '#475569',
+                fontWeight: '800', fontSize: '15px',
+                borderRadius: '12px', border: 'none', cursor: guestRoom.trim() ? 'pointer' : 'not-allowed',
+                boxShadow: guestRoom.trim() ? '0 4px 20px rgba(37,99,235,0.4)' : 'none',
+                transition: 'all 0.2s', textTransform: 'uppercase', letterSpacing: '1px',
+              }}
+            >
+              {loading ? '⏳ Setting Up...' : '✓ Confirm & Enter'}
+            </button>
+
+            <button
+              onClick={() => setShowRoomPrompt(false)}
+              style={{
+                marginTop: '12px', background: 'none', border: 'none',
+                color: '#475569', fontSize: '13px', cursor: 'pointer',
+                padding: '8px',
+              }}
+            >
+              ← Go Back
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

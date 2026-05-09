@@ -4,15 +4,45 @@ import '../styles/dashboard.css'
 
 export default function GuestLayout() {
   const role = localStorage.getItem('sentinel_role')
+  const guestRoom = localStorage.getItem('sentinel_guest_room') || '---'
+  const floorNum = guestRoom !== '---' ? guestRoom.charAt(0) : '-'
   
   if (role !== 'guest' && role !== 'manager') {
-    // If no specific role is found, fallback to onboarding or landing
     return <Navigate to="/onboarding" replace />
   }
 
   return (
     <div className="dash-layout">
       <div className="dash-main" style={{ marginLeft: 0 }}>
+        {/* Room Number Top Strip */}
+        <div style={{
+          background: 'linear-gradient(90deg, #1e3a5f 0%, #0f172a 50%, #1e3a5f 100%)',
+          borderBottom: '1px solid rgba(59, 130, 246, 0.3)',
+          padding: '6px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
+          fontSize: '13px',
+          fontWeight: '700',
+          color: '#93c5fd',
+          letterSpacing: '1px',
+        }}>
+          <span style={{ fontSize: '16px' }}>🏨</span>
+          <span>YOUR ROOM:</span>
+          <span style={{
+            background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+            color: '#fff',
+            padding: '2px 14px',
+            borderRadius: '6px',
+            fontSize: '15px',
+            fontWeight: '900',
+            letterSpacing: '2px',
+            boxShadow: '0 2px 8px rgba(37, 99, 235, 0.4)',
+          }}>{guestRoom}</span>
+          <span style={{ color: '#64748b', fontSize: '11px', marginLeft: '8px' }}>Floor {floorNum}</span>
+        </div>
+
         {/* Minimal Guest Header */}
         <header className="dash-header" style={{ padding: '0 24px' }}>
           <div className="dash-header-left">
