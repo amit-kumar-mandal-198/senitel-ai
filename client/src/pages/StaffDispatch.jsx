@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import API_BASE_URL from '../api.config'
 import BuildingMap from '../components/BuildingMap'
+import socket from '../utils/socket'
 
 export default function StaffDispatch() {
   const [staff, setStaff] = useState([])
@@ -29,8 +30,19 @@ export default function StaffDispatch() {
       }
     }
     fetchData()
-    const poll = setInterval(fetchData, 5000)
-    return () => clearInterval(poll)
+    const poll = setInterval(fetchData, 10000)
+
+    socket.on('crisis_triggered', (payload) => {
+      console.log('Crisis received in Staff Dispatch:', payload);
+      setActiveCrisis(payload.incident);
+      // Re-fetch staff immediately to see dispatch status
+      fetchData();
+    });
+
+    return () => {
+      clearInterval(poll);
+      socket.off('crisis_triggered');
+    }
   }, [])
 
   const statusStyle = { 

@@ -4,11 +4,29 @@ import { processChatbotQuery } from './chatLogic'
 
 const fastify = Fastify({ logger: true })
 
-import { FirestoreService } from './services/firebase.service'
+import { DatabaseService } from './services/db.service'
 import { DispatchOrchestrator } from './services/orchestrator.service'
 import { AlertPayload } from './services/channels/channel.interface'
+import { Server as SocketServer } from 'socket.io'
+import http from 'http'
 
 const orchestrator = new DispatchOrchestrator()
+
+// Create HTTP server for Socket.io compatibility
+const server = http.createServer(fastify.server)
+const io = new SocketServer(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+})
+
+io.on('connection', (socket) => {
+  fastify.log.info(`Socket connected: ${socket.id}`)
+  socket.on('disconnect', () => {
+    fastify.log.info(`Socket disconnected: ${socket.id}`)
+  })
+})
 
 fastify.register(cors, { origin: true })
 
@@ -76,8 +94,8 @@ fastify.get('/health', async (request, reply) => {
 // Get hotel overview
 fastify.get('/api/v1/hotel/overview', async (request, reply) => {
   try {
-    const hotel = await FirestoreService.getHotelOverview()
-    const incidents = await FirestoreService.getRecentIncidents(5)
+    const hotel = await DatabaseService.getHotelOverview()
+    const incidents = await DatabaseService.getRecentIncidents(5)
 
     return {
       hotel: hotel || mockHotel,
@@ -85,7 +103,7 @@ fastify.get('/api/v1/hotel/overview', async (request, reply) => {
       recentIncidents: incidents || []
     }
   } catch (err: any) {
-    fastify.log.warn('Firestore query failed, returning mock data:', err.message)
+    fastify.log.warn('Database query failed, returning mock data:', err.message)
     return {
       hotel: mockHotel,
       activeCrisis: null,
@@ -99,7 +117,7 @@ fastify.post('/api/v1/crisis/trigger', async (request, reply) => {
   const { type, severity, roomNum, floorNum } = request.body as any
   
   try {
-    const incident = await FirestoreService.triggerIncident({
+    const incident = await DatabaseService.triggerIncident({
       type,
       severity,
       roomNum: roomNum?.toString(),
@@ -108,7 +126,7 @@ fastify.post('/api/v1/crisis/trigger', async (request, reply) => {
     })
 
     // 2. Dispatch staff nearest to floor
-    await FirestoreService.dispatchStaffToFloor(parseInt(floorNum))
+    await DatabaseService.dispatchStaffToFloor(parseInt(floorNum))
 
     // 3. Trigger Master Orchestrator (Fan-out alerts)
     const payload: AlertPayload = {
@@ -128,13 +146,28 @@ fastify.post('/api/v1/crisis/trigger', async (request, reply) => {
       fastify.log.error(`Orchestrator failed during crisis dispatch: ${err.message}`)
     })
 
+    // 4. Broadcast via Socket.io
+    io.emit('crisis_triggered', {
+      incident,
+      message: payload.message
+    })
+
     return { success: true, incident, dispatchStarted: true }
   } catch (err: any) {
-    fastify.log.warn('Failed to create incident in Firestore:', err.message)
+    fastify.log.warn('Failed to create incident in Database:', err.message)
+    
+    const mockIncident = { id: 'mock-' + Date.now(), type, severity, status: 'active', roomNum, floorNum };
+    
+    // Broadcast mock incident as well for dev purposes
+    io.emit('crisis_triggered', {
+      incident: mockIncident,
+      message: `Emergency: ${type} reported (Mock Mode)`
+    })
+
     return { 
       success: true, 
-      incident: { id: 'mock-' + Date.now(), type, severity, status: 'active', roomNum, floorNum },
-      message: 'Crisis triggered (mock mode due to Firestore error)'
+      incident: mockIncident,
+      message: 'Crisis triggered (mock mode due to Database error)'
     }
   }
 })
@@ -169,10 +202,10 @@ fastify.post('/api/v1/chat/aegis', async (request, reply) => {
 // Get staff
 fastify.get('/api/v1/staff', async (request, reply) => {
   try {
-    const staff = await FirestoreService.getStaff()
+    const staff = await DatabaseService.getStaff()
     return { staff: staff || [] }
   } catch (err: any) {
-    fastify.log.warn('Failed to fetch staff from Firestore:', err.message)
+    fastify.log.warn('Failed to fetch staff from Database:', err.message)
     return { staff: [] }
   }
 })
@@ -181,10 +214,10 @@ fastify.get('/api/v1/staff', async (request, reply) => {
 fastify.post('/api/v1/crisis/resolve', async (request, reply) => {
   const { id } = request.body as any
   try {
-    const incident = await FirestoreService.resolveIncident(id)
+    const incident = await DatabaseService.resolveIncident(id)
     return { success: true, incident }
   } catch (err: any) {
-    fastify.log.warn('Failed to resolve incident in Firestore:', err.message)
+    fastify.log.warn('Failed to resolve incident in Database:', err.message)
     return { success: true, message: 'Crisis resolved (local update failed)' }
   }
 })
@@ -192,8 +225,9 @@ fastify.post('/api/v1/crisis/resolve', async (request, reply) => {
 const start = async () => {
   try {
     const port = Number(process.env.PORT) || 3000
-    await fastify.listen({ port, host: '0.0.0.0' })
-    fastify.log.info(`🚀 Hotel API running on 0.0.0.0:${port}`)
+    server.listen(port, '0.0.0.0', () => {
+      fastify.log.info(`🚀 Hotel API with Real-time Sync running on 0.0.0.0:${port}`)
+    })
   } catch (err: any) {
     fastify.log.error('Failed to start server:', err.message)
     process.exit(1)

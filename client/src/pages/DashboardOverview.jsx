@@ -4,6 +4,7 @@ import TiltCard from '../components/TiltCard'
 import CCTVModal from '../components/CCTVModal'
 import MeshVisualizer from '../components/MeshVisualizer'
 import API_BASE_URL from '../api.config'
+import socket from '../utils/socket'
 
 const sevColors = { critical: '#DC2626', high: '#F59E0B', medium: '#3B82F6', low: '#10B981' }
 const statusColors = { resolved: '#10B981', active: '#DC2626', investigating: '#F59E0B' }
@@ -151,9 +152,29 @@ export default function DashboardOverview() {
     }
     
     fetchData()
-    // Poll every 3 seconds for updates (e.g. from the crisis trigger)
-    const poll = setInterval(fetchData, 3000)
-    return () => clearInterval(poll)
+    // Poll every 30 seconds for updates (reduced because we have Socket.io)
+    const poll = setInterval(fetchData, 30000)
+    
+    // Real-time socket listener
+    socket.on('crisis_triggered', (payload) => {
+      console.log('Real-time Crisis Received:', payload);
+      setData(prev => ({
+        ...prev,
+        activeCrisis: payload.incident,
+        recentIncidents: [payload.incident, ...(prev?.recentIncidents || [])].slice(0, 10)
+      }));
+
+      // Voice notification
+      if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(`Warning: ${payload.incident.type} reported in room ${payload.incident.roomNum}.`);
+        window.speechSynthesis.speak(msg);
+      }
+    });
+
+    return () => {
+      clearInterval(poll);
+      socket.off('crisis_triggered');
+    }
   }, [])
 
   if (!data) {
