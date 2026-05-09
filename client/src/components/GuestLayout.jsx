@@ -44,9 +44,9 @@ export default function GuestLayout() {
                ℹ️ Help Mode
             </button>
             <ThemeToggle />
-            <div className="dash-user-menu">
+            <Link to="/guest/profile" className="dash-user-menu hover:bg-slate-800 transition-colors p-1 rounded-lg">
               <div className="dash-avatar" style={{ background: 'var(--sentinel-blue-light)' }}>GU</div>
-            </div>
+            </Link>
           </div>
         </header>
 

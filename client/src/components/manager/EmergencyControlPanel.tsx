@@ -1,22 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { triggerEmergency, resolveEmergency, EmergencyRecord } from '../../services/musterService';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ref, query, orderByChild, equalTo, limitToLast, onValue, get } from 'firebase/database';
+import { triggerEmergency, resolveEmergency, EmergencyRecord, db } from '../../services/musterService';
 import { useMusterBoard } from '../../hooks/useMusterBoard';
 import DispatchLinkPanel from './DispatchLinkPanel';
 import TranslationStatusPanel from './TranslationStatusPanel';
 import { orchestrateBroadcast } from '../../services/broadcastService';
 import { ALERT_MESSAGES, EmergencyType } from '../../constants/alertMessages';
-import { get, getDatabase, ref, query, orderByChild, equalTo, limitToLast, onValue } from 'firebase/database';
+
 const EmergencyControlPanel: React.FC = () => {
   const [activeEmergency, setActiveEmergency] = useState<EmergencyRecord | null>(null);
   const [emergencyType, setEmergencyType] = useState<EmergencyType>('FIRE');
   const [isTriggering, setIsTriggering] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [cachedGuests, setCachedGuests] = useState<any[]>([]);
 
   const { musterData, summary } = useMusterBoard(activeEmergency?.id || null);
 
+  // Pre-fetch guests for instant trigger
+  useEffect(() => {
+    const fetchGuests = async () => {
+      const guestsSnap = await get(ref(db, 'guests'));
+      if (guestsSnap.exists()) {
+        setCachedGuests(Object.entries(guestsSnap.val()).map(([id, g]: any) => ({ ...g, id })));
+      }
+    };
+    fetchGuests();
+  }, []);
+
   // Listen for active emergency
   useEffect(() => {
-    const db = getDatabase();
     const activeQuery = query(ref(db, 'emergencies'), orderByChild('status'), equalTo('active'), limitToLast(1));
     
     const unsubscribe = onValue(activeQuery, (snapshot) => {
@@ -45,33 +57,41 @@ const EmergencyControlPanel: React.FC = () => {
     return () => clearInterval(interval);
   }, [activeEmergency]);
 
+  // Memoize unaccounted list for performance
+  const unaccountedGuests = useMemo(() => {
+    return Object.values(musterData)
+      .filter(r => r.status === 'occupied')
+      .sort((a, b) => a.floor - b.floor || a.roomNumber.localeCompare(b.roomNumber));
+  }, [musterData]);
+
   const handleTrigger = async () => {
     const typeUpper = emergencyType.toUpperCase() as EmergencyType;
-    if (!window.confirm(`Are you sure you want to trigger a ${typeUpper} evacuation? This will activate all guest safety screens and send multilingual alerts.`)) return;
     
     setIsTriggering(true);
     try {
-      const db = getDatabase();
-      const guestsSnap = await get(ref(db, 'guests'));
-      const guests = guestsSnap.exists() 
-        ? Object.entries(guestsSnap.val()).map(([id, g]: any) => ({ ...g, id })) 
-        : [];
+      // 1. Use pre-fetched guests for instant speed
+      let guests = cachedGuests;
+      if (guests.length === 0) {
+        const guestsSnap = await get(ref(db, 'guests'));
+        guests = guestsSnap.exists() 
+          ? Object.entries(guestsSnap.val()).map(([id, g]: any) => ({ ...g, id })) 
+          : [];
+      }
 
-      // 1. Trigger the emergency record
-      const emergencyId = await triggerEmergency(emergencyType.toLowerCase(), 'Admin User', guests.map(g => ({
+      // 2. Trigger the emergency record
+      const emergencyId = await triggerEmergency(emergencyType.toLowerCase() as any, 'Admin User', guests.map(g => ({
         roomNumber: g.roomNumber,
         floor: g.floor,
         guestName: g.name,
         guestId: g.id
       })));
 
-      // 2. Orchestrate multilingual broadcast in background
+      // 3. Orchestrate multilingual broadcast (Fire and forget)
       const masterMsg = ALERT_MESSAGES[typeUpper];
       orchestrateBroadcast(emergencyId, masterMsg.body, typeUpper, guests);
 
     } catch (error) {
       console.error("Trigger failed:", error);
-      alert('Failed to trigger emergency.');
     } finally {
       setIsTriggering(false);
     }
@@ -192,18 +212,15 @@ const EmergencyControlPanel: React.FC = () => {
                   Unaccounted Guests
                 </h3>
                 <div className="max-h-40 overflow-y-auto pr-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-800">
-                  {Object.values(musterData)
-                    .filter(r => r.status === 'occupied')
-                    .sort((a, b) => a.floor - b.floor || a.roomNumber.localeCompare(b.roomNumber))
-                    .map(r => (
-                      <div key={r.roomNumber} className="flex items-center justify-between bg-gray-900 px-4 py-2 rounded-lg border border-gray-800/50">
-                        <div className="flex items-center gap-3">
-                          <span className="w-8 text-xs font-black text-purple-500">R{r.roomNumber}</span>
-                          <span className="text-xs font-bold text-white uppercase">{r.guestName}</span>
-                        </div>
-                        <span className="text-[10px] font-black text-gray-600 uppercase">Floor {r.floor}</span>
+                  {unaccountedGuests.map(r => (
+                    <div key={r.roomNumber} className="flex items-center justify-between bg-gray-900 px-4 py-2 rounded-lg border border-gray-800/50">
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 text-xs font-black text-purple-500">R{r.roomNumber}</span>
+                        <span className="text-xs font-bold text-white uppercase">{r.guestName}</span>
                       </div>
-                    ))}
+                      <span className="text-[10px] font-black text-gray-600 uppercase">Floor {r.floor}</span>
+                    </div>
+                  ))}
                   {summary.occupied === 0 && (
                     <p className="text-center py-4 text-green-500 font-bold italic text-sm">
                       ✨ All guests are accounted for!

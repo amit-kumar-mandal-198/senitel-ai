@@ -17,6 +17,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 import GuestLayout from './components/GuestLayout'
 import GuestOverview from './pages/GuestOverview'
 import GuestChatPage from './pages/GuestChatPage'
+import GuestProfile from './pages/GuestProfile'
+import ManagerProfile from './pages/ManagerProfile'
+import { ToastProvider } from './context/ToastContext'
 import TokenGate from './components/responder/TokenGate'
 import TacticalResponderView from './components/responder/TacticalResponderView'
 import './App.css'
@@ -50,7 +53,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ToastProvider>
       <SeasonalEffects theme={currentTheme} />
       <SensorDemoControls />
       <BrowserRouter>
@@ -79,6 +82,7 @@ function App() {
               <Route path="reports" element={<IncidentReports />} />
               <Route path="staff" element={<StaffDispatch />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="profile" element={<ManagerProfile />} />
               <Route path="maintenance-log" element={<MaintenanceLogHistory propertyId="PROP-01" />} />
             </Route>
           </Route>
@@ -88,11 +92,12 @@ function App() {
             <Route path="/guest" element={<GuestLayout />}>
               <Route index element={<GuestOverview />} />
               <Route path="chat" element={<GuestChatPage />} />
+              <Route path="profile" element={<GuestProfile />} />
             </Route>
           </Route>
         </Routes>
       </BrowserRouter>
-    </>
+    </ToastProvider>
   )
 }
 

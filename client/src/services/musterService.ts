@@ -14,7 +14,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+export const db = getDatabase(app);
 
 export interface MusterEntry {
   guestName: string;
@@ -30,7 +30,7 @@ export interface EmergencyRecord {
   status: "active" | "resolved";
   triggeredAt: number;
   triggeredBy: string;
-  type: "fire" | "evacuation" | "lockdown" | "other";
+  type: "fire" | "evacuation" | "lockdown" | "medical" | "flood" | "other";
 }
 
 export interface MusterSummary {

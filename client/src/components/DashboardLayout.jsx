@@ -95,10 +95,10 @@ export default function DashboardLayout() {
             <button className="dash-notification-btn" aria-label="Notifications">
               🔔<span className="dash-notif-badge">0</span>
             </button>
-            <div className="dash-user-menu">
+            <Link to="/dashboard/profile" className="dash-user-menu hover:bg-slate-800 transition-colors p-1 rounded-lg">
               <div className="dash-avatar">MG</div>
               {!sidebarCollapsed && <span className="dash-user-name">Manager</span>}
-            </div>
+            </Link>
           </div>
         </header>
 

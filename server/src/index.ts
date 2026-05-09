@@ -27,6 +27,9 @@ io.on('connection', (socket) => {
 
 fastify.register(cors, { origin: true })
 
+import profileRoutes from './routes/profileRoutes'
+fastify.register(profileRoutes, { prefix: '/api' })
+
 // Mock fallback data
 const mockHotel = {
   id: '1',

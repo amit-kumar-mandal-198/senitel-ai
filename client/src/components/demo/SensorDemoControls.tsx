@@ -3,7 +3,7 @@ import { getDatabase, ref, update, set } from 'firebase/database';
 import { SENSORS } from '../../constants/sensorConfigs';
 
 const SensorDemoControls: React.FC = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [isSequenceRunning, setIsSequenceRunning] = useState(false);
 
   const setSensorMode = async (sensorId: string, mode: string) => {
@@ -63,7 +63,7 @@ const SensorDemoControls: React.FC = () => {
   if (process.env.NODE_ENV === 'production' && !window.location.search.includes('demo=true')) return null;
 
   return (
-    <div className={`fixed bottom-4 right-4 z-[9999] transition-all duration-300 ${isExpanded ? 'w-80' : 'w-12 h-12 overflow-hidden'}`}>
+    <div className={`fixed bottom-4 right-4 z-[9999] transition-all duration-300 ${isExpanded ? 'w-[450px] h-[600px]' : 'w-12 h-12 overflow-hidden'}`}>
       {!isExpanded ? (
         <button 
           onClick={() => setIsExpanded(true)}
@@ -72,24 +72,27 @@ const SensorDemoControls: React.FC = () => {
           🎮
         </button>
       ) : (
-        <div className="bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden">
-          <div className="p-4 bg-gray-900 border-b border-gray-800 flex justify-between items-center">
-            <h3 className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
-              <span className="text-sm">🎮</span> Sensor Demo Controls
+        <div className="bg-gray-950/90 backdrop-blur-xl border-2 border-gray-800 rounded-[2rem] shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col h-full relative group">
+          {/* Glowing Side Boundary Accent */}
+          <div className="absolute left-0 top-0 w-1.5 h-full bg-gradient-to-b from-blue-500 via-indigo-600 to-purple-600 shadow-[2px_0_15px_rgba(59,130,246,0.5)]" />
+          
+          <div className="p-8 bg-gray-900/50 border-b border-gray-800 flex justify-between items-center backdrop-blur-md">
+            <h3 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-3">
+              <span className="text-2xl">🎮</span> Sensor Demo Controls
             </h3>
-            <button onClick={() => setIsExpanded(false)} className="text-gray-500 hover:text-white">✕</button>
+            <button onClick={() => setIsExpanded(false)} className="text-gray-400 hover:text-white text-2xl">✕</button>
           </div>
 
-          <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800">
-            {SENSORS.slice(0, 3).map(sensor => (
-              <div key={sensor.sensorId} className="space-y-2">
-                <p className="text-[10px] font-black text-gray-500 uppercase">{sensor.name}</p>
-                <div className="grid grid-cols-3 gap-1">
+          <div className="p-8 space-y-8 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800 bg-gradient-to-b from-transparent to-gray-900/30">
+            {SENSORS.map(sensor => (
+              <div key={sensor.sensorId} className="space-y-4 pl-2">
+                <p className="text-sm font-black text-gray-500 uppercase tracking-widest">{sensor.name}</p>
+                <div className="grid grid-cols-3 gap-3">
                   {['normal', 'drifting', 'critical'].map(mode => (
                     <button
                       key={mode}
                       onClick={() => setSensorMode(sensor.sensorId, mode)}
-                      className="text-[8px] font-black uppercase py-1.5 rounded bg-gray-900 border border-gray-800 text-gray-400 hover:border-blue-500 hover:text-white transition-colors"
+                      className="text-xs font-black uppercase py-4 rounded-xl bg-gray-900/50 border border-gray-800 text-gray-400 hover:border-blue-500/50 hover:text-white hover:bg-blue-600/10 transition-all active:scale-95 shadow-inner"
                     >
                       {mode}
                     </button>
@@ -98,19 +101,21 @@ const SensorDemoControls: React.FC = () => {
               </div>
             ))}
 
-            <div className="pt-4 space-y-2">
+            <div className="pt-8 space-y-4 border-t border-gray-800 pb-4">
               <button 
                 onClick={runFullSequence}
                 disabled={isSequenceRunning}
-                className={`w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                  isSequenceRunning ? 'bg-gray-800 text-gray-500' : 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-600/20 active:scale-95'
+                className={`w-full py-5 rounded-[1.5rem] text-sm font-black uppercase tracking-widest transition-all ${
+                  isSequenceRunning 
+                    ? 'bg-gray-800 text-gray-500' 
+                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 shadow-[0_10px_25px_rgba(59,130,246,0.3)] active:scale-[0.98]'
                 }`}
               >
                 {isSequenceRunning ? 'Sequence Running...' : '🚀 Run Full Demo Sequence'}
               </button>
               <button 
                 onClick={resetAll}
-                className="w-full py-2 rounded-xl text-[10px] font-black uppercase tracking-widest bg-red-600/10 text-red-500 border border-red-500/20 hover:bg-red-600/20 transition-all"
+                className="w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest bg-red-600/5 text-red-500/80 border border-red-500/10 hover:bg-red-600/10 hover:text-red-500 transition-all active:scale-95"
               >
                 🔄 Reset All Sensors
               </button>
