@@ -132,37 +132,64 @@ export default function DashboardOverview() {
 
   // Fetch real data from backend with demo fallback
   useEffect(() => {
-    let attempts = 0
-    const fetchData = async () => {
+    let attempts = 0;
+    let hasData = false;
+    let retryTimeout;
+
+    const fetchInitialData = async () => {
+      if (hasData) return;
+
       try {
-        const res = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+        
+        const res = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        
         if (res.ok) {
-          const json = await res.json()
-          setData(json)
-          return
+          const json = await res.json();
+          hasData = true;
+          setData(json);
+          return;
         }
       } catch (err) {
-        console.warn('API unreachable, attempt', ++attempts)
+        console.warn('API unreachable, attempt', ++attempts);
       }
-      // After 2 failed attempts (~6s), switch to demo mode
-      if (attempts >= 2 && !data) {
-        console.warn('Switching to demo mode with mock data')
-        setData(mockData)
+      
+      if (!hasData) {
+        if (attempts >= 2) {
+          console.warn('Switching to demo mode with mock data');
+          hasData = true;
+          setData(mockData);
+        } else {
+          retryTimeout = setTimeout(fetchInitialData, 1000); // Retry in 1s
+        }
       }
-    }
+    };
     
-    fetchData()
+    fetchInitialData();
+
     // Poll every 30 seconds for updates (reduced because we have Socket.io)
-    const poll = setInterval(fetchData, 30000)
+    const poll = setInterval(() => {
+      fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
+        .then(res => res.ok ? res.json() : null)
+        .then(json => {
+          if (json) setData(json);
+        })
+        .catch(() => {}); // Silent fail on polling
+    }, 30000);
     
     // Real-time socket listener
     socket.on('crisis_triggered', (payload) => {
       console.log('Real-time Crisis Received:', payload);
-      setData(prev => ({
-        ...prev,
-        activeCrisis: payload.incident,
-        recentIncidents: [payload.incident, ...(prev?.recentIncidents || [])].slice(0, 10)
-      }));
+      setData(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          activeCrisis: payload.incident,
+          recentIncidents: [payload.incident, ...(prev.recentIncidents || [])].slice(0, 10)
+        };
+      });
 
       // Voice notification
       if ('speechSynthesis' in window) {
@@ -173,6 +200,7 @@ export default function DashboardOverview() {
 
     return () => {
       clearInterval(poll);
+      clearTimeout(retryTimeout);
       socket.off('crisis_triggered');
     }
   }, [])

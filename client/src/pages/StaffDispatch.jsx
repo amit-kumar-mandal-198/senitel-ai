@@ -11,13 +11,18 @@ export default function StaffDispatch() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const staffRes = await fetch(`${API_BASE_URL}/api/v1/staff`)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+        
+        const staffRes = await fetch(`${API_BASE_URL}/api/v1/staff`, { signal: controller.signal });
         if (staffRes.ok) {
           const data = await staffRes.json()
           setStaff(data.staff || [])
         }
         
-        const overviewRes = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
+        const overviewRes = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (overviewRes.ok) {
           const overviewData = await overviewRes.json()
           setActiveCrisis(overviewData.activeCrisis)
