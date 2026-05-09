@@ -132,44 +132,31 @@ export default function DashboardOverview() {
 
   // Fetch real data from backend with demo fallback
   useEffect(() => {
-    let attempts = 0;
-    let hasData = false;
-    let retryTimeout;
-
     const fetchInitialData = async () => {
-      if (hasData) return;
-
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 1500); // 1.5s fast timeout
         
         const res = await fetch(`${API_BASE_URL}/api/v1/hotel/overview`, { signal: controller.signal });
         clearTimeout(timeoutId);
         
         if (res.ok) {
           const json = await res.json();
-          hasData = true;
           setData(json);
           return;
         }
       } catch (err) {
-        console.warn('API unreachable, attempt', ++attempts);
+        console.warn('API unreachable or timed out');
       }
       
-      if (!hasData) {
-        if (attempts >= 2) {
-          console.warn('Switching to demo mode with mock data');
-          hasData = true;
-          setData(mockData);
-        } else {
-          retryTimeout = setTimeout(fetchInitialData, 1000); // Retry in 1s
-        }
-      }
+      // If we reach here, we failed to load real data. Instantly use demo mode.
+      console.warn('Switching to demo mode with mock data');
+      setData(mockData);
     };
     
     fetchInitialData();
 
-    // Poll every 30 seconds for updates (reduced because we have Socket.io)
+    // Poll every 30 seconds for updates
     const poll = setInterval(() => {
       fetch(`${API_BASE_URL}/api/v1/hotel/overview`)
         .then(res => res.ok ? res.json() : null)
@@ -200,7 +187,6 @@ export default function DashboardOverview() {
 
     return () => {
       clearInterval(poll);
-      clearTimeout(retryTimeout);
       socket.off('crisis_triggered');
     }
   }, [])

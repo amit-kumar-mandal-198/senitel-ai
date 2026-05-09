@@ -8,13 +8,10 @@ import { DatabaseService } from './services/db.service'
 import { DispatchOrchestrator } from './services/orchestrator.service'
 import { AlertPayload } from './services/channels/channel.interface'
 import { Server as SocketServer } from 'socket.io'
-import http from 'http'
 
 const orchestrator = new DispatchOrchestrator()
 
-// Create HTTP server for Socket.io compatibility
-const server = http.createServer(fastify.server)
-const io = new SocketServer(server, {
+const io = new SocketServer(fastify.server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
@@ -225,9 +222,8 @@ fastify.post('/api/v1/crisis/resolve', async (request, reply) => {
 const start = async () => {
   try {
     const port = Number(process.env.PORT) || 3000
-    server.listen(port, '0.0.0.0', () => {
-      fastify.log.info(`🚀 Hotel API with Real-time Sync running on 0.0.0.0:${port}`)
-    })
+    await fastify.listen({ port, host: '0.0.0.0' })
+    fastify.log.info(`🚀 Hotel API with Real-time Sync running on 0.0.0.0:${port}`)
   } catch (err: any) {
     fastify.log.error('Failed to start server:', err.message)
     process.exit(1)

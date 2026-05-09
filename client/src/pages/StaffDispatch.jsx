@@ -12,7 +12,7 @@ export default function StaffDispatch() {
     const fetchData = async () => {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 1500); // 1.5s timeout
         
         const staffRes = await fetch(`${API_BASE_URL}/api/v1/staff`, { signal: controller.signal });
         if (staffRes.ok) {
