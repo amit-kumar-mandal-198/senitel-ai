@@ -9,7 +9,6 @@ import DemoToolbar from '../components/dev/DemoToolbar'
 export default function GuestOverview() {
   const [activeCrisis, setActiveCrisis] = useState(null)
   
-  // Real-time listener for crisis state to warn guests
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,7 +32,6 @@ export default function GuestOverview() {
         await fetch(`${API_BASE_URL}/api/v1/crisis/trigger`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          // Guests trigger a general "medical/security" SOS for their unknown or rough location
           body: JSON.stringify({ type: 'medical', severity: 'high', roomNum: 'GUEST-SOS', floorNum: 1 })
         });
         alert('SOS Triggered. Help is on the way. Please stay calm and use the AI Chat for instructions.');
@@ -42,90 +40,99 @@ export default function GuestOverview() {
   }
 
   return (
-    <div className="dash-overview" style={{ padding: '0' }}>
+    <div className="dash-page">
       <SafetyCheckIn />
       <DemoToolbar />
       
-      {/* Top Warning Banner for Guests if active crisis exists */}
       {activeCrisis && (
-        <div className="sticky top-4 z-50 w-full bg-red-900/80 backdrop-blur-md border border-red-500/30 p-6 rounded-2xl text-white mb-6 shadow-[0_0_40px_rgba(220,38,38,0.3)] flex flex-col md:flex-row items-center justify-between">
+        <div style={{ padding: '20px', background: 'rgba(220,38,38,0.15)', border: '1px solid rgba(220,38,38,0.5)', borderRadius: 'var(--radius-lg)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ fontSize: '32px', animation: 'pulse-glow 2s infinite alternate' }}>⚠️</div>
           <div>
-            <h2 className="m-0 text-2xl font-bold flex items-center gap-3">
-              <span className="animate-pulse">⚠️</span> FACILITY EMERGENCY: {activeCrisis.type.toUpperCase()}
+            <h2 style={{ margin: '0 0 4px 0', fontSize: '20px', fontWeight: '800', color: '#FCA5A5', letterSpacing: '1px' }}>
+              FACILITY EMERGENCY: {activeCrisis.type.toUpperCase()}
             </h2>
-            <p className="m-0 text-lg text-red-100 mt-2">Please follow instructions from the AI Chat below or proceed to the nearest exit immediately.</p>
+            <p style={{ margin: 0, color: 'white', fontSize: '15px' }}>
+              Please follow instructions from the AI Chat below or proceed to the nearest exit immediately.
+            </p>
           </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start">
+      <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '24px', alignItems: 'start' }}>
         
-        {/* Left Side: SOS Button & Info */}
-        <div className="flex flex-col gap-6 md:col-span-1">
+        {/* Left Sidebar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
-          {/* GIANT SOS BUTTON */}
-          <div className="bg-slate-900/50 backdrop-blur-lg border border-white/10 rounded-3xl p-8 flex flex-col items-center text-center shadow-xl">
-            <h3 className="mt-0 mb-6 text-lg text-slate-300 font-medium">Emergency?</h3>
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-400 rounded-full blur opacity-30 group-hover:opacity-70 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+          {/* Giant SOS Card */}
+          <div className="dash-card" style={{ textAlign: 'center', padding: '32px 20px', border: '1px solid rgba(220,38,38,0.3)', background: 'rgba(220,38,38,0.02)' }}>
+            <h3 style={{ margin: '0 0 24px 0', fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)' }}>Emergency?</h3>
+            <div style={{ position: 'relative', display: 'inline-block' }}>
               <button 
                 onClick={triggerSOS}
-                className="relative flex items-center justify-center w-40 h-40 rounded-full bg-slate-900 border border-white/10 text-red-500 font-black text-3xl tracking-widest shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-slate-800 hover:border-red-500/50 hover:text-red-400 focus:outline-none focus:ring-4 focus:ring-red-500/30 active:scale-95"
+                style={{
+                  width: '140px', height: '140px', borderRadius: '50%',
+                  background: 'linear-gradient(145deg, #1e293b, #0f172a)',
+                  border: '2px solid rgba(220,38,38,0.5)',
+                  color: '#ef4444', fontSize: '36px', fontWeight: '900', letterSpacing: '2px',
+                  cursor: 'pointer', boxShadow: '0 10px 30px rgba(220,38,38,0.2), inset 0 0 20px rgba(0,0,0,0.5)',
+                  transition: 'all 0.2s',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.95)'}
+                onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               >
                 SOS
               </button>
             </div>
-            <p className="mt-8 text-sm text-slate-400 leading-relaxed">Tap once to instantly alert hotel security and management.</p>
-            <Link to="/guest/crisis" style={{
-              display: 'inline-block',
-              marginTop: '16px',
-              padding: '10px 20px',
-              background: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-              borderRadius: '10px',
-              color: '#60A5FA',
-              fontWeight: '600',
-              fontSize: '13px',
-              textDecoration: 'none',
-              transition: 'all 0.2s',
-            }}>
+            <p style={{ margin: '24px 0 16px 0', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+              Tap once to instantly alert hotel security and management.
+            </p>
+            <Link to="/guest/crisis" className="btn btn-outline" style={{ width: '100%', justifyContent: 'center', color: '#60A5FA', borderColor: 'rgba(59,130,246,0.3)' }}>
               📋 Detailed Report
             </Link>
           </div>
 
-          {/* LANGUAGE PREFERENCE SELECTOR */}
+          {/* Language Selector */}
           <LanguagePreference guestId="guest_123" />
 
-          {/* Quick Help Card */}
-          <div className="bg-slate-900/50 backdrop-blur-lg border border-white/10 rounded-3xl p-6 shadow-xl">
-            <h3 className="text-base font-semibold text-slate-200 mb-4 flex items-center gap-2">
-              <span className="text-blue-400">ℹ️</span> Guest Information
+          {/* Guest Info Card */}
+          <div className="dash-card">
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ color: '#60A5FA' }}>ℹ️</span> Guest Information
             </h3>
-            <ul className="space-y-3 text-sm text-slate-400 list-none p-0 m-0">
-              <li className="flex justify-between border-b border-white/5 pb-2">
-                <span>WiFi:</span>
-                <strong className="text-slate-200">Sentinel_Guest</strong>
-              </li>
-              <li className="flex justify-between border-b border-white/5 pb-2">
-                <span>Front Desk:</span>
-                <strong className="text-slate-200">Dial 0</strong>
-              </li>
-              <li className="flex flex-col pt-1 text-left">
-                <span className="mb-1">Evacuation Route:</span>
-                <strong className="text-slate-200">See back of room door.</strong>
-              </li>
-            </ul>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-primary)', paddingBottom: '8px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>WiFi:</span>
+                <strong style={{ color: 'var(--text-primary)' }}>Sentinel_Guest</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-primary)', paddingBottom: '8px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Front Desk:</span>
+                <strong style={{ color: 'var(--text-primary)' }}>Dial 0</strong>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Evacuation Route:</span>
+                <strong style={{ color: 'var(--text-primary)' }}>See back of room door.</strong>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right Side: Embedded AI Chat */}
-        <div className="h-[70vh] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-slate-900/40 backdrop-blur-md md:col-span-3 relative">
-          <div className="h-full w-full">
+        {/* Right Side AI Chat */}
+        <div className="dash-card" style={{ padding: 0, height: 'min(75vh, 800px)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div style={{ padding: '16px', borderBottom: '1px solid var(--border-primary)', background: 'var(--bg-panel)' }}>
+            <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ animation: 'pulse-glow 2s infinite alternate' }}>🤖</span> Aegis AI Assistant
+            </h3>
+            <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--text-tertiary)' }}>Ask for facility info or emergency guidance</p>
+          </div>
+          <div style={{ flex: 1, position: 'relative' }}>
             <GuestChat embedded={true} />
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   )
 }

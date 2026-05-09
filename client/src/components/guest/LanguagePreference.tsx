@@ -42,20 +42,36 @@ const LanguagePreference: React.FC<LanguagePreferenceProps> = ({ guestId }) => {
   };
 
   return (
-    <div className="bg-slate-900/50 backdrop-blur-lg border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
-      <div className="flex items-center gap-3">
-        <span className="text-2xl">🌐</span>
+    <div className="dash-card">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+        <span style={{ fontSize: '24px' }}>🌐</span>
         <div>
-          <h3 className="text-sm font-black text-white uppercase tracking-tight">Your Alert Language</h3>
-          <p className="text-[10px] text-slate-400 font-bold">Emergency alerts will be sent in your chosen language.</p>
+          <h3 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            Alert Language
+          </h3>
+          <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: '600' }}>
+            Choose your preferred language.
+          </p>
         </div>
       </div>
 
-      <div className="relative">
+      <div style={{ position: 'relative' }}>
         <select
           value={selectedLang}
           onChange={(e) => handleLanguageChange(e.target.value)}
-          className="w-full bg-slate-950 border border-white/5 rounded-xl px-4 py-3 text-sm font-bold text-white focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
+          style={{
+            width: '100%',
+            background: 'var(--bg-elevated)',
+            border: '1px solid var(--border-primary)',
+            borderRadius: 'var(--radius-md)',
+            padding: '12px 16px',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: 'var(--text-primary)',
+            appearance: 'none',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-ui)',
+          }}
         >
           {SUPPORTED_LANGUAGES.map((lang) => (
             <option key={lang.code} value={lang.code}>
@@ -63,13 +79,21 @@ const LanguagePreference: React.FC<LanguagePreferenceProps> = ({ guestId }) => {
             </option>
           ))}
         </select>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+        <div style={{
+          position: 'absolute',
+          right: '16px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          pointerEvents: 'none',
+          color: 'var(--text-tertiary)',
+          fontSize: '10px'
+        }}>
           ▼
         </div>
       </div>
 
       {isSaved && (
-        <p className="text-[10px] text-green-500 font-black uppercase text-center animate-fade-in">
+        <p style={{ margin: '12px 0 0 0', fontSize: '11px', color: '#10B981', fontWeight: '800', textTransform: 'uppercase', textAlign: 'center', animation: 'pulse-glow 2s infinite alternate' }}>
           ✓ Saved automatically
         </p>
       )}
