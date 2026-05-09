@@ -44,19 +44,6 @@ export default function GuestOverview() {
       <SafetyCheckIn />
       <DemoToolbar />
       
-      {activeCrisis && (
-        <div style={{ padding: '20px', background: 'rgba(220,38,38,0.15)', border: '1px solid rgba(220,38,38,0.5)', borderRadius: 'var(--radius-lg)', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ fontSize: '32px', animation: 'pulse-glow 2s infinite alternate' }}>⚠️</div>
-          <div>
-            <h2 style={{ margin: '0 0 4px 0', fontSize: '20px', fontWeight: '800', color: '#FCA5A5', letterSpacing: '1px' }}>
-              FACILITY EMERGENCY: {activeCrisis.type.toUpperCase()}
-            </h2>
-            <p style={{ margin: 0, color: 'white', fontSize: '15px' }}>
-              Please follow instructions from the AI Chat below or proceed to the nearest exit immediately.
-            </p>
-          </div>
-        </div>
-      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '24px', alignItems: 'start' }}>
         
