@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import API_BASE_URL from '../api.config'
 import GuestChat from './GuestChat'
 import SafetyCheckIn from '../components/guest/SafetyCheckIn'
@@ -75,6 +76,21 @@ export default function GuestOverview() {
               </button>
             </div>
             <p className="mt-8 text-sm text-slate-400 leading-relaxed">Tap once to instantly alert hotel security and management.</p>
+            <Link to="/guest/crisis" style={{
+              display: 'inline-block',
+              marginTop: '16px',
+              padding: '10px 20px',
+              background: 'rgba(59, 130, 246, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              borderRadius: '10px',
+              color: '#60A5FA',
+              fontWeight: '600',
+              fontSize: '13px',
+              textDecoration: 'none',
+              transition: 'all 0.2s',
+            }}>
+              📋 Detailed Report
+            </Link>
           </div>
 
           {/* LANGUAGE PREFERENCE SELECTOR */}

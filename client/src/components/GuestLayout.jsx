@@ -1,4 +1,4 @@
-import { Outlet, Navigate } from 'react-router-dom'
+import { Outlet, Navigate, Link } from 'react-router-dom'
 import ThemeToggle from './ThemeToggle'
 import '../styles/dashboard.css'
 
@@ -23,6 +23,23 @@ export default function GuestLayout() {
           </div>
           
           <div className="dash-header-right">
+            <Link to="/guest/crisis" style={{
+              padding: '8px 16px',
+              background: 'linear-gradient(135deg, #DC2626, #991B1B)',
+              border: '1px solid rgba(220, 38, 38, 0.5)',
+              borderRadius: '10px',
+              color: '#fff',
+              fontWeight: '700',
+              fontSize: '13px',
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 2px 12px rgba(220, 38, 38, 0.3)',
+              transition: 'all 0.2s',
+            }}>
+              🚨 Report Emergency
+            </Link>
             <button className="btn btn-outline" onClick={() => alert("Help is on the way. Please use the Guest AI Chat for immediate guidance.")} style={{ padding: '6px 12px', fontSize: '13px' }}>
                ℹ️ Help Mode
             </button>

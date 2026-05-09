@@ -16,6 +16,7 @@ import SeasonalEffects from './components/SeasonalEffects'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestLayout from './components/GuestLayout'
 import GuestOverview from './pages/GuestOverview'
+import GuestCrisisTrigger from './pages/GuestCrisisTrigger'
 import TokenGate from './components/responder/TokenGate'
 import TacticalResponderView from './components/responder/TacticalResponderView'
 import './App.css'
@@ -86,6 +87,7 @@ function App() {
           <Route element={<ProtectedRoute allowedRole="guest" redirectPath="/onboarding" />}>
             <Route path="/guest" element={<GuestLayout />}>
               <Route index element={<GuestOverview />} />
+              <Route path="crisis" element={<GuestCrisisTrigger />} />
             </Route>
           </Route>
         </Routes>
