@@ -74,7 +74,7 @@ const LanguagePreference: React.FC<LanguagePreferenceProps> = ({ guestId }) => {
           }}
         >
           {SUPPORTED_LANGUAGES.map((lang) => (
-            <option key={lang.code} value={lang.code}>
+            <option key={lang.code} value={lang.code} style={{ color: '#000', background: '#fff' }}>
               {lang.flag} {lang.native} — {lang.name}
             </option>
           ))}
