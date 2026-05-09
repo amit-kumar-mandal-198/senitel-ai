@@ -8,6 +8,11 @@ import API_BASE_URL from '../api.config'
 const sevColors = { critical: '#DC2626', high: '#F59E0B', medium: '#3B82F6', low: '#10B981' }
 const statusColors = { resolved: '#10B981', active: '#DC2626', investigating: '#F59E0B' }
 
+import EmergencyControlPanel from '../components/manager/EmergencyControlPanel'
+import PredictiveDashboard from '../components/manager/PredictiveDashboard'
+import LiveFloorMap from '../components/manager/LiveFloorMap'
+import { getDatabase, ref, query, orderByChild, equalTo, limitToLast, onValue } from 'firebase/database'
+
 export default function DashboardOverview() {
   const [time, setTime] = useState(new Date())
   const [data, setData] = useState(null)
@@ -15,6 +20,23 @@ export default function DashboardOverview() {
   const [cctvRoom, setCctvRoom] = useState(null)
   const [isOffline, setIsOffline] = useState(!navigator.onLine)
   const [responderMode, setResponderMode] = useState(false)
+  const [activeEmergencyId, setActiveEmergencyId] = useState(null)
+
+  const propertyId = "PROP-01"; // Consistent property ID for demo
+
+  // Listen for active emergency in Firebase
+  useEffect(() => {
+    const db = getDatabase();
+    const activeQuery = query(ref(db, 'emergencies'), orderByChild('status'), equalTo('active'), limitToLast(1));
+    const unsubscribe = onValue(activeQuery, (snapshot) => {
+      if (snapshot.exists()) {
+        setActiveEmergencyId(Object.keys(snapshot.val())[0]);
+      } else {
+        setActiveEmergencyId(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
   
   // Real-time clock
   useEffect(() => {
@@ -182,6 +204,12 @@ export default function DashboardOverview() {
   
   return (
     <div className="dash-overview">
+      <div className="mb-8 space-y-6">
+        <EmergencyControlPanel />
+        <PredictiveDashboard propertyId={propertyId} />
+        {activeEmergencyId && <LiveFloorMap emergencyId={activeEmergencyId} />}
+      </div>
+
       <div className="dash-page-header" style={{ flexWrap: 'wrap' }}>
         <div>
           <h1 className="dash-page-title">🏨 {hotel.name} Dashboard</h1>

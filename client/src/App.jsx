@@ -11,13 +11,20 @@ import Incidents from './pages/Incidents'
 import IncidentReports from './pages/IncidentReports'
 import StaffDispatch from './pages/StaffDispatch'
 import Settings from './pages/Settings'
+import MaintenanceLogHistory from './components/manager/MaintenanceLogHistory'
 import SeasonalEffects from './components/SeasonalEffects'
 import ProtectedRoute from './components/ProtectedRoute'
 import GuestLayout from './components/GuestLayout'
 import GuestOverview from './pages/GuestOverview'
+import TokenGate from './components/responder/TokenGate'
+import TacticalResponderView from './components/responder/TacticalResponderView'
 import './App.css'
 import './styles/option-e.css'
 import './styles/premium.css'
+
+import { startSensorSimulation, stopSensorSimulation } from './services/sensorSimulator'
+import { runAnomalyDetectionCycle } from './services/anomalyDetector'
+import SensorDemoControls from './components/demo/SensorDemoControls'
 
 function App() {
   const [currentTheme, setCurrentTheme] = useState(() => localStorage.getItem('theme') || 'dark');
@@ -25,16 +32,40 @@ function App() {
   useEffect(() => {
     const handleThemeChange = (e) => setCurrentTheme(e.detail);
     window.addEventListener('themeChange', handleThemeChange);
-    return () => window.removeEventListener('themeChange', handleThemeChange);
+    
+    // Start Predictive Maintenance Background Tasks
+    const propertyId = "PROP-01"; // In real app, get from context/auth
+    startSensorSimulation(propertyId);
+    
+    const anomalyInterval = setInterval(() => {
+      runAnomalyDetectionCycle(propertyId);
+    }, 60000);
+
+    return () => {
+      window.removeEventListener('themeChange', handleThemeChange);
+      stopSensorSimulation();
+      clearInterval(anomalyInterval);
+    };
   }, []);
 
   return (
     <>
       <SeasonalEffects theme={currentTheme} />
+      <SensorDemoControls />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/onboarding" element={<Onboarding />} />
+          
+          {/* Public First Responder Portal */}
+          <Route 
+            path="/responder/:token" 
+            element={
+              <TokenGate>
+                {(linkData) => <TacticalResponderView linkData={linkData} />}
+              </TokenGate>
+            } 
+          />
           
           {/* Manager Only Routes */}
           <Route element={<ProtectedRoute allowedRole="manager" redirectPath="/guest" />}>
@@ -47,6 +78,7 @@ function App() {
               <Route path="reports" element={<IncidentReports />} />
               <Route path="staff" element={<StaffDispatch />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="maintenance-log" element={<MaintenanceLogHistory propertyId="PROP-01" />} />
             </Route>
           </Route>
 

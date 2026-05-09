@@ -1,0 +1,35 @@
+{
+  "FIRE_DETECTED": [
+    { "device_type": "HVAC", "command": "SHUT OFF", "delay_ms": 3500 },
+    { "device_type": "DOOR_LOCK", "command": "DISENGAGE", "delay_ms": 1000 },
+    { "device_type": "ELEVATOR", "command": "LOCK TO GROUND FLOOR", "delay_ms": 3000 },
+    { "device_type": "FIRE_SUPPRESSION", "command": "ACTIVATE", "delay_ms": 2000 },
+    { "device_type": "LIGHTING", "command": "SWITCH TO EMERGENCY RED", "delay_ms": 500 },
+    { "device_type": "NURSE_CALL", "command": "BROADCAST MASS ALERT", "delay_ms": 100 }
+  ],
+  "RANSOMWARE_ATTACK": [
+    { "device_type": "INFUSION_PUMP_NETWORK", "command": "ISOLATE FROM LAN", "delay_ms": 500 },
+    { "device_type": "DOOR_LOCK", "command": "ENGAGE LOCKDOWN (Server Rooms)", "delay_ms": 1000 },
+    { "device_type": "BACKUP_POWER", "command": "SWITCH TO ISOLATED CIRCUIT", "delay_ms": 2000 },
+    { "device_type": "HVAC", "command": "INCREASE COOLING MAX", "delay_ms": 4000 }
+  ],
+  "UNAUTHORIZED_PHYSICAL_ACCESS": [
+    { "device_type": "DOOR_LOCK", "command": "ENGAGE LOCKDOWN", "delay_ms": 800 },
+    { "device_type": "CAMERA", "command": "INCREASE FRAME RATE + RECORD", "delay_ms": 300 },
+    { "device_type": "LIGHTING", "command": "FULL BRIGHTNESS", "delay_ms": 200 },
+    { "device_type": "ELEVATOR", "command": "LOCKOUT", "delay_ms": 2500 }
+  ],
+  "POWER_FAILURE": [
+    { "device_type": "BACKUP_POWER", "command": "ACTIVATE GENERATOR", "delay_ms": 2000 },
+    { "device_type": "LIGHTING", "command": "SHUT OFF NON-CRITICAL", "delay_ms": 1000 },
+    { "device_type": "ELEVATOR", "command": "RETURN TO GROUND + HOLD", "delay_ms": 3000 },
+    { "device_type": "OXYGEN_VALVE", "command": "MAINTAIN OPEN (CRITICAL)", "delay_ms": 0 },
+    { "device_type": "INFUSION_PUMP_NETWORK", "command": "BATTERY MODE ALERT", "delay_ms": 500 }
+  ],
+  "PATIENT_ELOPEMENT": [
+    { "device_type": "DOOR_LOCK", "command": "SOFT LOCK PERIMETER", "delay_ms": 1200 },
+    { "device_type": "NURSE_CALL", "command": "SILENT ALERT NEAREST STATION", "delay_ms": 100 },
+    { "device_type": "CAMERA", "command": "TRACK AND RECORD", "delay_ms": 300 },
+    { "device_type": "ELEVATOR", "command": "REQUIRE BADGE FOR DEPARTURE", "delay_ms": 2000 }
+  ]
+}

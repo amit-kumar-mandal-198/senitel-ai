@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import API_BASE_URL from '../api.config'
 import GuestChat from './GuestChat'
+import SafetyCheckIn from '../components/guest/SafetyCheckIn'
+import LanguagePreference from '../components/guest/LanguagePreference'
+import DemoToolbar from '../components/dev/DemoToolbar'
 
 export default function GuestOverview() {
   const [activeCrisis, setActiveCrisis] = useState(null)
@@ -39,6 +42,8 @@ export default function GuestOverview() {
 
   return (
     <div className="dash-overview" style={{ padding: '0' }}>
+      <SafetyCheckIn />
+      <DemoToolbar />
       
       {/* Top Warning Banner for Guests if active crisis exists */}
       {activeCrisis && (
@@ -71,6 +76,9 @@ export default function GuestOverview() {
             </div>
             <p className="mt-8 text-sm text-slate-400 leading-relaxed">Tap once to instantly alert hotel security and management.</p>
           </div>
+
+          {/* LANGUAGE PREFERENCE SELECTOR */}
+          <LanguagePreference guestId="guest_123" />
 
           {/* Quick Help Card */}
           <div className="bg-slate-900/50 backdrop-blur-lg border border-white/10 rounded-3xl p-6 shadow-xl">
