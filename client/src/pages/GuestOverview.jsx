@@ -4,7 +4,7 @@ import API_BASE_URL from '../api.config'
 import SafetyCheckIn from '../components/guest/SafetyCheckIn'
 import LanguagePreference from '../components/guest/LanguagePreference'
 import DemoToolbar from '../components/dev/DemoToolbar'
-import GuestChat from '../components/guest/GuestChat'
+import GuestChat from './GuestChat'
 
 export default function GuestOverview() {
   const [activeCrisis, setActiveCrisis] = useState(null)
