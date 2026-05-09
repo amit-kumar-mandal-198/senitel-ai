@@ -1,11 +1,11 @@
+import React, { useState, useEffect } from 'react';
 import { triggerEmergency, resolveEmergency, EmergencyRecord } from '../../services/musterService';
 import { useMusterBoard } from '../../hooks/useMusterBoard';
 import DispatchLinkPanel from './DispatchLinkPanel';
 import TranslationStatusPanel from './TranslationStatusPanel';
 import { orchestrateBroadcast } from '../../services/broadcastService';
 import { ALERT_MESSAGES, EmergencyType } from '../../constants/alertMessages';
-import { get } from 'firebase/database';
-
+import { get, getDatabase, ref, query, orderByChild, equalTo, limitToLast, onValue } from 'firebase/database';
 const EmergencyControlPanel: React.FC = () => {
   const [activeEmergency, setActiveEmergency] = useState<EmergencyRecord | null>(null);
   const [emergencyType, setEmergencyType] = useState<EmergencyType>('FIRE');
@@ -220,8 +220,6 @@ const EmergencyControlPanel: React.FC = () => {
         <TranslationStatusPanel emergencyId={activeEmergency.id || null} />
       )}
     </div>
-  );
-};
   );
 };
 
