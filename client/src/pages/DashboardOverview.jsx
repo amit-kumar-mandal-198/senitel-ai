@@ -9,7 +9,6 @@ import socket from '../utils/socket'
 const sevColors = { critical: '#DC2626', high: '#F59E0B', medium: '#3B82F6', low: '#10B981' }
 const statusColors = { resolved: '#10B981', active: '#DC2626', investigating: '#F59E0B' }
 
-import EmergencyControlPanel from '../components/manager/EmergencyControlPanel'
 import PredictiveDashboard from '../components/manager/PredictiveDashboard'
 import LiveFloorMap from '../components/manager/LiveFloorMap'
 import { getDatabase, ref, query, orderByChild, equalTo, limitToLast, onValue } from 'firebase/database'
@@ -380,7 +379,6 @@ export default function DashboardOverview() {
       )}
 
       <div className="mb-8 space-y-6">
-        <EmergencyControlPanel />
         <PredictiveDashboard propertyId={propertyId} />
         {activeEmergencyId && <LiveFloorMap emergencyId={activeEmergencyId} />}
       </div>
